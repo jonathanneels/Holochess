@@ -219,7 +219,12 @@ a:active {
      </div>
 	
 	<div style="position: absolute; bottom: 0; padding:5px;  border: 0;" id="divGoldCount"> 
-   	<p id="pGold" style="position"  ><div class="InlineButtons" id="divPass" onclick=""   ><p> PASS</p> </div><br><br><br><div class="InlineButtons" id="divGiveUp" onclick="currentPlayerGivesUp=true;"   ><p> FORFEIT</p> </div> <br><br>    <br><label id="lOnlyDamgeInfo">&#x1F7E5; = only damage </label><br><label id="lMoveAndDamgeInfo">&#x1F7E8; = move & damage</label> <br> &#x1F7E9; = only move </p>
+   	<p id="pGold" style="position"  >
+	<div class="InlineButtons floorButtons" id="divLevelUp" onclick=""   ><p>  &#x25B2;</p> </div>
+		<div class="InlineButtons floorButtons" id="divLevelDown" onclick=""   ><p>   &#x25BC;</p> </div>
+		<div class="InlineButtons floorButtons" id="divLevelShift" onclick=""   ><p>&#x21bb;</p> </div><br><br><br>
+
+	<div class="InlineButtons" id="divPass" onclick=""   ><p> PASS</p> </div><br><br><br><div class="InlineButtons" id="divGiveUp" onclick="currentPlayerGivesUp=true;"   ><p> FORFEIT</p> </div> <br><br>    <br><label id="lOnlyDamgeInfo">&#x1F7E5; = only damage </label><br><label id="lMoveAndDamgeInfo">&#x1F7E8; = move & damage</label> <br> &#x1F7E9; = only move </p>
        
 </div>
 
@@ -282,12 +287,16 @@ a:active {
 </label>
  
 
-	<br><br>
+	<br> 
 	
- Seats &nbsp; <input type="number" id="txtPlayerCount" name="txtPlayerCount" min=2 max=2  value=2><br> 
-<span id="spanAIAdd"> AI's&nbsp; &nbsp; &nbsp;<input type="number" id="txtAIPlayers" name="txtAIPlayers"  min=1 max=2 value=1></span>
+ Seats &nbsp; <input type="number" id="txtPlayerCount" name="txtPlayerCount" min=2 max=2  value=2> 
+<span id="spanAIAdd"> AI's&nbsp; &nbsp; &nbsp;<input type="number" id="txtAIPlayers" name="txtAIPlayers"  min=1 max=2 value=1></span> 
+<span id="span3D"><abbr title="On how many 'boards' will the game takes place?"> Floors &nbsp;<input type="number" id="txtFloors" name="txtFloors"  min=1 max=6 value=1></abbr></span>
+	<br> 
+
 	<br><small>Important: <br>Vice/Vobbels (concept, images) are a registered property of Jonathan F.M. Neels. <br> For commercial uses contact me (for non-profit causes, please download and have fun). </small>
-  </div>
+ <br> <br>  </div>	
+
   <div class="modal-footer">
   <p>Jonathan F.M. Neels - Fumetsujo Studio <br>
    Contact information: <a href="mailto:jonathanneels@hotmail.com">
@@ -355,6 +364,7 @@ var WhoText= "Player " +(WhoMe+1).toString()
 var playerCount=2;
 var aICount=2;
 var pionObjectCount = 0;// count interactable (square) objects, also used a unique identifier. Ref; obj["pionNumberOnField"]
+var groundLevels =1;
 
 var isTurnBased= true;
 var isAttackOrMoveAndAttack=false;// movement possible, then attack (if attack, no movement anymore).
@@ -370,6 +380,8 @@ var isCustomDPS= true;// game addition for demo/flavour. atm Not to be used in o
 var isCustomBlockFields= true; //same as in customdps
 
 var isSpaceChess=true;
+var is3DChess=true;
+
 var isColorSwitchSide=false;
 
 //////////////////////////////// 
@@ -599,7 +611,7 @@ if(isWithRainFall){
 			}
         var positionObj= function(x,y,z,isAllowedToDamage,isAllowedToTeleport)
 			{
-			             var position = new BABYLON.MeshBuilder.CreateBox("positionObj"+uuidv4(), {size: (gridSizeX/gridSizeZ)/4.4}, scene);
+			             var position = new BABYLON.MeshBuilder.CreateBox("positionObj"+uuidv4(), {size: (gridSizeX/gridSizeZ)/4.0}, scene);
 						 var mat = new BABYLON.StandardMaterial("positionObjmat"+uuidv4(), scene);
 							  mat.diffuse = new BABYLON.Color3(1, 1, 1);
 							  mat.specular = new BABYLON.Color3(1, 1, 1);
@@ -787,6 +799,43 @@ if(isWithSprite){
 
 			}
 			
+			
+			var GroundObj = function(gridSizeX, gridSizeY, gridSizeZ, img,gLevels)
+			{
+			for (var f = 0; f < gLevels; f++) {
+			            var ground = BABYLON.Mesh.CreateGround("ground" , gridSizeX, gridSizeY, gridSizeZ, scene);
+            ground.material = new BABYLON.StandardMaterial("grdmat", scene);
+            ground.material.wireframe = false;
+			
+			ground.position.y-=f;
+			
+			ground["floorId"] =f;
+
+			if(typeof img ==="undefined")
+			{
+			img ="static/images/decor/HoloGraph_Chess_Board_Transparent.png"
+			
+			}
+			
+				if(typeof gLevels ==="undefined")
+			{
+			gLevels=1
+			
+			}
+        	 ground.material.diffuseTexture= new BABYLON.Texture(img, scene);
+		ground.material.diffuseTexture.hasAlpha  = true;
+		ground.visibility  = 0.3;
+		//ground.material.specularColor = new BABYLON.Color3(0, 0, 0); https://stackoverflow.com/questions/46862168/babylon-js-remove-light-reflection-of-sphere
+					   ground.material.diffuseTexture.hasAlpha = true;     
+ground.material.useAlphaFromDiffuseTexture = true;
+//ground.isPickable=false;
+//ground.material.isPickable=false;
+
+}
+return ground;
+																			
+
+			}
 			var isJumpOverObjectCheck= function(damage)
 			{
 			var isObjPresent=false;
@@ -824,8 +873,11 @@ if(isWithSprite){
 
 			var movementRight= function (object, steps, isCanDoDamageOnField, isCanJumpOverObjects, isCanJumpOverObstacles) //position p1
 			{
+																for (var f = 0; f < groundLevels; f++) {
+
 				for (var i = 0; i < steps; i++) {
-				var damage= positionObj(object.position.x+i,0.2,object.position.z );
+				if( f > i){continue;}
+				var damage= positionObj(object.position.x+i,0.5-f,object.position.z );
 				if(!isCanJumpOverObstacles){
 				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
  											  
@@ -845,11 +897,15 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 				if(isJumpOverObjectCheck(damage)){ if(!isCanDoDamageOnField){damage.dispose();}break;
  											  
 				}
-			}}}
+			}}}}
 				var movementLeft= function (object, steps, isCanDoDamageOnField, isCanJumpOverObjects, isCanJumpOverObstacles)
 			{
+													for (var f = 0; f < groundLevels; f++) {
+
 				for (var i = 0; i < steps; i++) {
- 				 var damage=positionObj(object.position.x-i,0.2,object.position.z );
+								if( f > i){continue;}
+
+ 				 var damage=positionObj(object.position.x-i,0.5-f,object.position.z );
 				 if(!isCanJumpOverObstacles){
 				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
  											  
@@ -869,11 +925,15 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 				if(isJumpOverObjectCheck(damage)){ if(!isCanDoDamageOnField){damage.dispose();}break;
  											  
 				}
-			}}}
+			}}}}
 				var movementUp= function (object, steps, isCanDoDamageOnField, isCanJumpOverObjects, isCanJumpOverObstacles)
 			{
+										for (var f = 0; f < groundLevels; f++) {
+
 				for (var i = 0; i < steps; i++) {
- 				var damage= positionObj(object.position.x,0.2,object.position.z+i );
+								if( f > i){continue;}
+
+ 				var damage= positionObj(object.position.x,0.5-f,object.position.z+i );
 				 
 if(!isCanJumpOverObstacles){
 				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
@@ -895,10 +955,15 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
  											  
 				}
 			}}}
+			}
 				var movementDown= function (object, steps, isCanDoDamageOnField, isCanJumpOverObjects, isCanJumpOverObstacles)
 			{
+							for (var f = 0; f < groundLevels; f++) {
+
 				for (var i = 0; i < steps; i++) {
- 				var damage= positionObj(object.position.x,0.2,object.position.z-i );
+								if( f > i){continue;}
+
+ 				var damage= positionObj(object.position.x,0.5-f,object.position.z-i );
 				
 				if(!isCanJumpOverObstacles){
 				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
@@ -922,10 +987,14 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			}
 			 
 			}
+			}
 				var movementLeftDown= function (object, steps, isCanDoDamageOnField, isCanJumpOverObjects, isCanJumpOverObstacles)
 			{
+			for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
- 				var damage= positionObj(object.position.x-i,0.2,object.position.z-i );
+								if( f > i){continue;}
+
+ 				var damage= positionObj(object.position.x-i,0.5-f,object.position.z-i );
 				if(!isCanJumpOverObstacles){
 				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
  											  
@@ -945,12 +1014,15 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 				}
 			} }
 			
-			}
+			}}
 			
 				var movementRightDown= function (object, steps, isCanDoDamageOnField, isCanJumpOverObjects, isCanJumpOverObstacles)
 			{
+			for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
- 				var damage= positionObj(object.position.x+i,0.2,object.position.z-i );
+								if( f > i){continue;}
+
+ 				var damage= positionObj(object.position.x+i,0.5-f,object.position.z-i );
 				if(!isCanJumpOverObstacles){
 				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
  											  
@@ -970,13 +1042,16 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
  											  
 				}
 			} 
-			
+			}
 			}}
 			
 			var movementRightUp= function (object, steps, isCanDoDamageOnField, isCanJumpOverObjects, isCanJumpOverObstacles)
 			{
+				for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
- 				var damage= positionObj(object.position.x+i,0.2,object.position.z+i );
+								if( f > i){continue;}
+
+ 				var damage= positionObj(object.position.x+i,0.5-f,object.position.z+i );
 				if(!isCanJumpOverObstacles){
 				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
  											  
@@ -995,14 +1070,17 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 				if(isJumpOverObjectCheck(damage)){ if(!isCanDoDamageOnField){damage.dispose();} break;
  											  
 				}
-			} 
+			} }
 			
 			}}
 			
 				var movementLeftUp= function (object, steps, isCanDoDamageOnField, isCanJumpOverObjects, isCanJumpOverObstacles)
 			{
+			for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
- 				var damage= positionObj(object.position.x-i,0.2,object.position.z+i ); 
+								if( f > i){continue;}
+
+ 				var damage= positionObj(object.position.x-i,0.5-f,object.position.z+i ); 
 				
 				  if(!isCanJumpOverObstacles){
 				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
@@ -1023,7 +1101,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
  											  
 				}
 			}
-			} 
+			} } 
 			
 			}
 			
@@ -1104,15 +1182,6 @@ if(m.name.indexOf("positionObj") >-1)
         	light.groundColor = new BABYLON.Color3(.5, .5, .5);
             light.intensity = 0.7;//nota high intensity is nice effect and lower better for minimap
         
-            var ground = BABYLON.Mesh.CreateGround("ground", gridSizeX, gridSizeY, gridSizeZ, scene);
-            ground.material = new BABYLON.StandardMaterial("grdmat", scene);
-            ground.material.wireframe = false;
-        	 ground.material.diffuseTexture= new BABYLON.Texture("static/images/decor/HoloGraph_Chess_Board_Transparent.png", scene);
-		ground.material.diffuseTexture.hasAlpha  = true;
-		ground.visibility  = 0.3;
-		//ground.material.specularColor = new BABYLON.Color3(0, 0, 0); https://stackoverflow.com/questions/46862168/babylon-js-remove-light-reflection-of-sphere
-					   ground.material.diffuseTexture.hasAlpha = true;     
-ground.material.useAlphaFromDiffuseTexture = true;
 
 		calculateStartPlayer= function(){
        
@@ -1233,91 +1302,87 @@ isStandAllowedOnDamageField=false;
         	  	 obj=SquareInteractObj(-1.0,.5,-2.0,(gridSizeX/gridSizeZ)-0.2,gridSizeX/gridSizeZ,(gridSizeX/gridSizeZ)-0.2,p1BlueItems,17,6,2,1,4,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Takonada.png","Takonada",3,"Encore (2 actions in a turn)",isColorSwitchSide)  
 					obj.getChildren()[0].rotation.z  =0.0 
 					
-					ground.dispose();
-					ground.material.dispose();
-                ground = BABYLON.Mesh.CreateGround("ground", 5, 5, 5, scene);
-            ground.material = new BABYLON.StandardMaterial("grdmat", scene);
-ground.material.diffuseTexture= new BABYLON.Texture("static/images/decor/Dejarik_Chess_Board_Transparent_BW.png", scene);
-		ground.material.diffuseTexture.hasAlpha  = true;
- 		ground.visibility  = 0.3;
-            ground.material.wireframe = false;
-					   ground.material.diffuseTexture.hasAlpha = true;    
-ground.material.useAlphaFromDiffuseTexture = true;
+ 					  ground=GroundObj(5, 5, 5, "static/images/decor/Dejarik_Chess_Board_Transparent_BW.png",groundLevels); 
+   
+   	for (var f = 0; f < groundLevels; f++) {
+ SphereBlockObj(3,0.5-f,3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+  SphereBlockObj(-3,0.5-f,-3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(-3,0.5-f,3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(3,0.5-f,-3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(3,0.5-f,3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
 
+  SphereBlockObj(-2,0.5-f,-3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(-2,0.5-f,3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(2,0.5-f,-3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(2,0.5-f, 3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+  SphereBlockObj(-1,0.5-f,-3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(-1,0.5-f,3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(1,0.5-f,-3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(1,0.5-f, 3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+  SphereBlockObj(-0,0.5-f,-3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(-0,0.5-f,3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(0,0.5-f,-3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(0,0.5-f, 3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
 
- SphereBlockObj(3,0.5,3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
-  SphereBlockObj(-3,0.5,-3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(-3,0.5,3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(3,0.5,-3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(3,0.5,3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
-
-  SphereBlockObj(-2,0.5,-3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(-2,0.5,3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(2,0.5,-3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(2,0.5, 3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
-  SphereBlockObj(-1,0.5,-3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(-1,0.5,3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(1,0.5,-3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(1,0.5, 3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
-  SphereBlockObj(-0,0.5,-3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(-0,0.5,3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(0,0.5,-3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(0,0.5, 3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
-
-  SphereBlockObj(-3,0.5,-2,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(-3,0.5,2,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(3,0.5,-2,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(3,0.5, 2,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)  
-  SphereBlockObj(-3,0.5,-1,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(-3,0.5,1,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(3,0.5,-1,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(3,0.5, 1,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
-  SphereBlockObj(-3,0.5,0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(-3,0.5,0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(3,0.5,0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
- SphereBlockObj(3,0.5, 0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
-
+  SphereBlockObj(-3,0.5-f,-2,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(-3,0.5-f,2,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(3,0.5-f,-2,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(3,0.5-f, 2,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)  
+  SphereBlockObj(-3,0.5-f,-1,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(-3,0.5-f,1,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(3,0.5-f,-1,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(3,0.5-f, 1,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+  SphereBlockObj(-3,0.5-f,0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(-3,0.5-f,0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(3,0.5-f,0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+ SphereBlockObj(3,0.5-f, 0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
+}
 			}else{
+			
+			  ground=GroundObj(gridSizeX, gridSizeY, gridSizeZ, "static/images/decor/HoloGraph_Chess_Board_Transparent.png",groundLevels);
+
 			 			Resource(0,0,0);
 $("#lOnlyDamgeInfo").remove();
 $("#lMoveAndDamgeInfo").html("&#x1F7E5; = move & damage");
 
 			if(isCustomBlockFields){
- SphereBlockObj(3.5,0.5,3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
-  SphereBlockObj(-3.5,0.5,-3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
- SphereBlockObj(-3.5,0.5,3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
-  SphereBlockObj(3.5,0.5,-3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+			   	for (var f = 0; f < groundLevels; f++) {
 
- SphereBlockObj(2.5,0.5,3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
-  SphereBlockObj(-2.5,0.5,-3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
- SphereBlockObj(-2.5,0.5,3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
-  SphereBlockObj(2.5,0.5,-3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+ SphereBlockObj(3.5,0.5-f,3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+  SphereBlockObj(-3.5,0.5-f,-3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+ SphereBlockObj(-3.5,0.5-f,3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+  SphereBlockObj(3.5,0.5-f,-3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
 
- SphereBlockObj(1.5,0.5,3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
-  SphereBlockObj(-1.5,0.5,-3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
- SphereBlockObj(-1.5,0.5,3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
-  SphereBlockObj(1.5,0.5,-3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+ SphereBlockObj(2.5,0.5-f,3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+  SphereBlockObj(-2.5,0.5-f,-3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+ SphereBlockObj(-2.5,0.5-f,3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+  SphereBlockObj(2.5,0.5-f,-3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
 
-  SphereBlockObj(3.5,0.5,2.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
-  SphereBlockObj(-3.5,0.5,-2.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
- SphereBlockObj(-3.5,0.5,2.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
-  SphereBlockObj(3.5,0.5,-2.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+ SphereBlockObj(1.5,0.5-f,3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+  SphereBlockObj(-1.5,0.5-f,-3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+ SphereBlockObj(-1.5,0.5-f,3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+  SphereBlockObj(1.5,0.5-f,-3.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
 
-  SphereBlockObj(3.5,0.5,1.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
-  SphereBlockObj(-3.5,0.5,-1.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
- SphereBlockObj(-3.5,0.5,1.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
-  SphereBlockObj(3.5,0.5,-1.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+  SphereBlockObj(3.5,0.5-f,2.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+  SphereBlockObj(-3.5,0.5-f,-2.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+ SphereBlockObj(-3.5,0.5-f,2.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+  SphereBlockObj(3.5,0.5-f,-2.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
 
-   SphereBlockObj(2.5,0.5,2.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
-  SphereBlockObj(-2.5,0.5,-2.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
- SphereBlockObj(-2.5,0.5,2.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
-  SphereBlockObj(2.5,0.5,-2.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+  SphereBlockObj(3.5,0.5-f,1.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+  SphereBlockObj(-3.5,0.5-f,-1.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+ SphereBlockObj(-3.5,0.5-f,1.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+  SphereBlockObj(3.5,0.5-f,-1.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+
+   SphereBlockObj(2.5,0.5-f,2.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+  SphereBlockObj(-2.5,0.5-f,-2.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+ SphereBlockObj(-2.5,0.5-f,2.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+  SphereBlockObj(2.5,0.5-f,-2.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
   
-   SphereBlockObj(0.5,0.5,0.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
-   SphereBlockObj(-0.5,0.5,-0.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
-   SphereBlockObj(-0.5,0.5,0.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
-   SphereBlockObj(0.5,0.5,-0.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
-}
+   SphereBlockObj(0.5,0.5-f,0.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+   SphereBlockObj(-0.5,0.5-f,-0.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+   SphereBlockObj(-0.5,0.5-f,0.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+   SphereBlockObj(0.5,0.5-f,-0.5,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0)
+}}
 
  			customHorse(1.5,.5,2.5,1,!isInteractionMeshesUseSprites); 
 	 		customKing (0.5,.5,3.5,1,!isInteractionMeshesUseSprites)//nr 7
@@ -1559,6 +1624,42 @@ if(typeof f.encore !== "undefined")
 	  $("#info").append( "Current player passes.<br>");
   switchUser();
 });
+
+	$( "#divLevelUp" ).bind( "click", function() {
+ camera.setPosition(new BABYLON.Vector3(camera.position.x, camera.position.y+1.5, camera.position.z));
+ 
+});
+
+	$( "#divLevelDown" ).bind( "click", function() {
+
+ camera.setPosition(new BABYLON.Vector3(camera.position.x, camera.position.y-1.5, camera.position.z));
+ 
+ });
+ 
+ var groundShift=0; 
+	$( "#divLevelShift" ).bind( "click", function() {
+
+  //camera.setPosition(new BABYLON.Vector3(-Math.PI/2, 1.1, 15));
+if(groundShift !=0){
+   scene.meshes.forEach(function(m) {
+if(  m.name ==="ground")
+			{  m.position  =(new BABYLON.Vector3( m.position.x+groundShift, m.position.y , m.position.x+groundShift));
+			}});
+			
+			groundShift=0;
+
+}else{
+groundShift=100;
+   scene.meshes.forEach(function(m) {
+if(  m.name ==="ground")
+			{  m.position  =(new BABYLON.Vector3( m.position.x-groundShift, m.position.y , m.position.x-groundShift));
+			}});
+
+}
+ });
+
+
+
 			  setPostionActivePlayer=function (meshTouched)
 			{
 			 if(typeof meshTouched == "undefined" || isEndgame)
@@ -1744,7 +1845,8 @@ delete activePlayer['encore']; }else{
 
 			activePlayer.position.x  = meshTouched.position.x ; 		
   			activePlayer.position.z  = meshTouched.position.z ;
-			
+			  			activePlayer.position.y  = meshTouched.position.y  ;
+
  			 
  			/*if(isAttackOrMoveAndAttack && typeof activePlayer.encore !== "undefined"){ clearNonTargetsPositioningsObjectsOnScene(); } 
 			else{*/
@@ -1828,9 +1930,9 @@ return true;
  			// activePlayer.material.diffuseColor= new BABYLON.Color3(0.4, 1.4, 1.4);
 
 			 if(isInteractionMeshesUseSprites && typeof activePlayer !== "undefined" && typeof activePlayer.getChildren()[0] != "undefined" ){ activePlayer.getChildren()[0].visibility =1;}else{ activePlayer.visibility =1;}
-	 if(typeof pickResult.pickedMesh.specialDescription !== "undefined" && isInteractionMeshesUseSprites&& typeof activePlayer.getChildren()[0].material  !== "undefined") {$("#divSelectedItem").html("<label style='position:absolute; margin-left:-85px;'>"+pickResult.pickedMesh.ObjectGameName+"</label><br><img  class='infoImg'   src='"+activePlayer.getChildren()[0].material.diffuseTexture.url +"' alt='infoImage'> Attack distance: "+pickResult.pickedMesh.DamageRange+"<br>Move distance: "+pickResult.pickedMesh.MovementRange +"<br>Damage: "+pickResult.pickedMesh.dps+"<br>Lives: "+pickResult.pickedMesh.Health+"<br><br>"+pickResult.pickedMesh.specialDescription+"<br>");		
+	 if(typeof pickResult.pickedMesh.specialDescription !== "undefined" && isInteractionMeshesUseSprites&& typeof activePlayer.getChildren()[0].material  !== "undefined") {$("#divSelectedItem").html("<label style='position:absolute; margin-left:-85px;'>"+pickResult.pickedMesh.ObjectGameName+"</label><br><img  class='infoImg'   src='"+activePlayer.getChildren()[0].material.diffuseTexture.url +"' alt='infoImage'> Attack distance: "+pickResult.pickedMesh.DamageRange+"<br>Move distance: "+pickResult.pickedMesh.MovementRange +"<br>Damage: "+pickResult.pickedMesh.dps+"<br>Lives: "+pickResult.pickedMesh.Health+"<br><br><br>"+pickResult.pickedMesh.specialDescription+"<br>");		
 	}
-	 else if(isInteractionMeshesUseSprites&& typeof activePlayer.getChildren()[0].material  !== "undefined") {$("#divSelectedItem").html("<img  class='infoImg'   src='"+activePlayer.getChildren()[0].material.diffuseTexture.url +"' alt='infoImage'><br>Attack distance: "+pickResult.pickedMesh.DamageRange+"<br>Move distance: "+pickResult.pickedMesh.MovementRange +"<br>Damage: "+pickResult.pickedMesh.dps+"<br>Lives: "+pickResult.pickedMesh.Health+"<br>");		
+	 else if(isInteractionMeshesUseSprites  && typeof activePlayer !== "undefined" && typeof activePlayer.getChildren()[0] != "undefined" && typeof activePlayer.getChildren()[0].material  !== "undefined") {$("#divSelectedItem").html("<img  class='infoImg'   src='"+activePlayer.getChildren()[0].material.diffuseTexture.url +"' alt='infoImage'><br>Attack distance: "+pickResult.pickedMesh.DamageRange+"<br>Move distance: "+pickResult.pickedMesh.MovementRange +"<br>Damage: "+pickResult.pickedMesh.dps+"<br>Lives: "+pickResult.pickedMesh.Health+"<br>");		
 	}
 	else{ $("#divSelectedItem").html("<img  class='infoImg'   src='static/images/units/v_"+pickResult.pickedMesh.levelId+".png' alt='infoImage'><br>Attack distance: "+pickResult.pickedMesh.DamageRange+"<br>Move distance: "+pickResult.pickedMesh.MovementRange +"<br>Damage: "+pickResult.pickedMesh.dps+"<br>Lives: "+pickResult.pickedMesh.Health+"<br>");		
 		}
@@ -1847,7 +1949,7 @@ if(Who != pickResult.pickedMesh.TeamId && isTurnBased ){return; }
 			}
 			else{	  if(isInteractionMeshesUseSprites && typeof activePlayer !== "undefined" && typeof activePlayer.getChildren()[0] != "undefined" ){ activePlayer.getChildren()[0].visibility =0.5;
 			}else if(typeof activePlayer !== "undefined"){activePlayer.visibility = 0.5;} 
-			clearPositioningsObjectsOnScene();}
+			if(pickResult.pickedMesh.name == "ground" ){clearPositioningsObjectsOnScene();}}
         }
     };
 
@@ -2045,9 +2147,9 @@ else{
 																if(aICount >= playerCount ||( aICount == 1 && Who ==1)){m.visibility = 0.0;}
 																else{ m.visibility = 0.25;  }
 
-												if(isInteractionMeshesUseSprites&&g.levelId>0){m.scaling=new BABYLON.Vector3(4.8,5.1,4.8);		m.position.y = 0.5;/*added for newly added items*/}
-												else if(g.levelId>0){
-											m.scaling=new BABYLON.Vector3(5.0,5.1,5.0);	m.position.y = g.position.y ; }
+												if(isInteractionMeshesUseSprites&&g.levelId>0){m.scaling=new BABYLON.Vector3(3.4,4.1,3.4);	 
+												}else if(g.levelId>0){
+											m.scaling=new BABYLON.Vector3(4.0,4.1,4.0);  }
 											  }
 											  }
 											   else if(m.name.indexOf("InteractionObj") >-1&&   g.name.indexOf("InteractionObj") >-1&& typeof activePlayer != "undefined" && activePlayer.TeamId != g.TeamId )
@@ -2066,7 +2168,7 @@ else{
 
 											
 											
-										 	if(!isStandAllowedOnDamageField && m.isAllowedToDamage && typeof m.targetPieces === "undefined"   ){
+										 	if(!isStandAllowedOnDamageField && m.isAllowedToDamage && typeof m.targetPieces === "undefined"&& typeof activePlayer != "undefined" && typeof activePlayer.MovementRange != "undefined" &&   m.stepID <=activePlayer.MovementRange  ){
   																 m.material.diffuseColor= new BABYLON.Color3(1.4, 1.4, .4);// yellow both possible
 																 m.isStandAllowedOnDamageField=true;
 
@@ -2116,7 +2218,7 @@ if(currentPlayerGivesUp){$("#info").append( "Player 1 gave up.<br><br>" );}
 
 					for (var i = 0; i < 10; i++) { //certainly removing all instances.
 scene.meshes.forEach(function(m) {
-if(m.name !=="skyBox"  &&  m.name !=="ground")
+if(m.name !=="skyBox" )// &&  m.name !=="ground")
 			{m.dispose();
 			}});}
 
@@ -2143,7 +2245,8 @@ if(m.name !=="skyBox"  &&  m.name !=="ground")
 			if(!isEndgame && ( (aICount ==1 && Who ==1) || (aICount >= playerCount  )    ))
 			{
 			
- 			
+ 			 if(aICount >= playerCount  ){$("#divGiveUp").hide();$("#divPass").hide();}
+
 			var shuffledTopicArray = shuffle(scene.meshes);
 
 			 console.log("Thinking...");
@@ -2262,6 +2365,9 @@ playerCount = $("#txtPlayerCount").val();
  isWithWeatherEffect=$("#chWeatherEffects").prop("checked");
 isInteractionMeshesUseSprites=!$("#chisInteractionMeshesUseSprites").prop("checked");
 
+groundLevels=$("#txtFloors").val();
+ if(groundLevels <2){$(".floorButtons").hide();}
+ 
 isSpaceChess= $("#chSpaceChess").prop("checked");
 isColorSwitchSide=$("#chSwitchSides").prop("checked");
 
