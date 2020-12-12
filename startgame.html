@@ -273,11 +273,23 @@ a:active {
  <br>
 
  <br>
- <label class="container" >
-  <input type="checkbox" id="chSpaceChess"  onclick="$('#lblisInteractionMeshesUseSprites').toggle();">
-<abbr title="Inspired on a game far far away. Dejirak, dijirido?"> Space chess? </abbr>
+ <label class="container" id="lblchSpaceChess">
+  <input type="checkbox" id="chSpaceChess"  onclick="$('#lblisInteractionMeshesUseSprites').toggle();$('#lblch3DChess').toggle();">
+<abbr title="Inspired on a game far far away. Dejirak, dijirido?"> Space chess </abbr>
   <span class="checkmark"></span>
-</label><br><br>
+</label>
+<br>
+ <label class="container" id="lblch3DChess">
+  <input type="checkbox" id="ch3DChess"  onclick="$('#lblisInteractionMeshesUseSprites').toggle();$('#lblChessClassicPieces').toggle();$('#lblchSpaceChess').toggle();">
+<abbr title="Beyond the 2D frontier. Tri-D chess meets jungle chess pickled with classic European chess on multi-layered shogi planes."> Triyond Chess </abbr>
+  <span class="checkmark"></span>
+</label>
+ <label class="container" id="lblChessClassicPieces" hidden>
+  <input type="checkbox" id="ch3DChessClassicPieces"  onclick="">
+<abbr title="Use classic chess pieces."> Classic pieces </abbr>
+  <span class="checkmark"></span>
+</label>
+<br><br>
 
 
 <label class="container" hidden><br>
@@ -291,7 +303,7 @@ a:active {
 	
  Seats &nbsp; <input type="number" id="txtPlayerCount" name="txtPlayerCount" min=2 max=2  value=2> 
 <span id="spanAIAdd"> AI's&nbsp; &nbsp; &nbsp;<input type="number" id="txtAIPlayers" name="txtAIPlayers"  min=1 max=2 value=1></span> 
-<span id="span3D"><abbr title="On how many 'boards' will the game takes place?"> Floors &nbsp;<input type="number" id="txtFloors" name="txtFloors"  min=1 max=6 value=1></abbr></span>
+<span id="span3D" hidden><abbr title="On how many 'boards' will the game takes place?"> Floors &nbsp;<input type="number" id="txtFloors" name="txtFloors"  min=1 max=6 value=1></abbr></span>
 	<br> 
 
 	<br><small>Important: <br>Vice/Vobbels (concept, images) are a registered property of Jonathan F.M. Neels. <br> For commercial uses contact me (for non-profit causes, please download and have fun). </small>
@@ -332,6 +344,8 @@ a:active {
   https://fumetsujo.pythonanywhere.com/</a>.</p>
   </div>
    </div>
+        <script src="objects.js"></script>
+        <script src="objectmovements.js"></script>
 
   <script>
         var canvas = document.getElementById("renderCanvas");
@@ -342,9 +356,13 @@ var gridSizeZ= 8;
 
 var borderX=3.5;
 var borderZ=3.5
+var borderY=3.5; // lowest point ( 
+var borderYTop=1.5; // Highest point  
 
 var isWithMinimap= true;
 var minimapDistance=5;
+   var mm  ;
+
 ////////CUSTOM//////
 var Who=0; // in case of turn-based
 var WhoMe=0; //multiplayer purpose
@@ -365,6 +383,7 @@ var playerCount=2;
 var aICount=2;
 var pionObjectCount = 0;// count interactable (square) objects, also used a unique identifier. Ref; obj["pionNumberOnField"]
 var groundLevels =1;
+var groundArray=[];
 
 var isTurnBased= true;
 var isAttackOrMoveAndAttack=false;// movement possible, then attack (if attack, no movement anymore).
@@ -380,7 +399,10 @@ var isCustomDPS= true;// game addition for demo/flavour. atm Not to be used in o
 var isCustomBlockFields= true; //same as in customdps
 
 var isSpaceChess=true;
-var is3DChess=true;
+
+var isClassicChess=false;
+ var is3DChess=true;
+ var isWithNormalChessPieces=true;
 
 var isColorSwitchSide=false;
 
@@ -448,662 +470,8 @@ if(!isNextKeyInputAllowed){return;}
 		setTimeout(function(){  isNextKeyInputAllowed=true; }, 600);
       
 	  }
-        
-		
-		var Weather=function (isWithFog, isWithRainFall, fogIntensity,RainRadius){
-				if(isWithFog){
-   
-    if(typeof fogIntensity === "undefined"){
-				 fogIntensity=0.05;
-				 }
-				 scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-        scene.fogDensity = fogIntensity ; 
-        scene.fogColor = new BABYLON.Color3(1.4, 1.9, 0.5); // color alt later adjustable
-}
-
-if(isWithRainFall){
-// weather REF: https://www.babylonjs-playground.com/#10XN2J#8 ///////////////////////////////////////
-            // Create & launch a particule system
-            particleSystem = new BABYLON.ParticleSystem("spawnParticles", 3600, scene);    // 3600 particles to have a continue effect when computing circle positions
-            particleSystem.particleTexture = new BABYLON.Texture("static/images/particles/flare.png", scene);
-            particleSystem.color1 = new BABYLON.Color4(.9, .9, .95, 1.0);
-            particleSystem.color2 = new BABYLON.Color4(0.2, 0.2, .3, .5);
-            particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
-            particleSystem.emitter = new BABYLON.Vector3(0, 20, 0);
-            particleSystem.minSize = 0.1;
-            particleSystem.maxSize = 0.5;// this!!
-            particleSystem.emitRate = 500;
-            particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;     // to manage alpha
-            particleSystem.gravity = new BABYLON.Vector3(0, -9.81, 0);
-            //particleSystem.direction1 = new BABYLON.Vector3(-1, 1, -1);
-            //particleSystem.direction2 = new BABYLON.Vector3(1, 1, 1);
-            particleSystem.minEmitPower = -10;
-            particleSystem.maxEmitPower = -100;
-            //particleSystem.updateSpeed = 0.1;
-        
-			 if(typeof RainRadius === "undefined"){
-				 RainRadius=150;
-				 }
-
-            var radius = RainRadius;
-        
-            // Custom function to get the circle effect
-            particleSystem.startPositionFunction = function(worldMatrix, positionToUpdate)
-            {
-                var rndAngle = 2 * Math.random() * Math.PI;
-                var randX = Math.random() *radius * Math.sin(rndAngle);
-                var randY = this.minEmitBox.y;
-                var randZ = Math.random() *radius * Math.cos(rndAngle);
-                
-                BABYLON.Vector3.TransformCoordinatesFromFloatsToRef(randX, randY, randZ, worldMatrix, positionToUpdate);
-            }
+    
 			
-			
-             particleSystem.updateFunction = function(particles) {
-
-        for (var index = 0; index < particles.length; index++) {
-            var particle = particles[index];
-            particle.age += this._scaledUpdateSpeed;
-            if (particle.age >= particle.lifeTime) {
-                this.recycleParticle(particle);
-                index--;
-                continue;
-            }
-            else {
-                particle.colorStep.scaleToRef(this._scaledUpdateSpeed, this._scaledColorStep);
-                particle.color.addInPlace(this._scaledColorStep);
-                if (particle.color.a < 0)
-                    particle.color.a = 0;
-                particle.angle += particle.angularSpeed * this._scaledUpdateSpeed;
-                particle.direction.scaleToRef(this._scaledUpdateSpeed, this._scaledDirection);
-                particle.position.addInPlace(this._scaledDirection);
-                this.gravity.scaleToRef(this._scaledUpdateSpeed, this._scaledGravity);
-                particle.direction.addInPlace(this._scaledGravity);
-                 
-             }
-        }
-            };
-
- 
-            // Start
-            this.particleSystem.start();
- 				
-				}
-			};
-		// atm as decor, later useable as a resource object
-		var  Resource=   function Resource(x,y,z,sparkleCount) {
-                 var mesh = BABYLON.MeshBuilder.CreateBox("ResourceObj"+uuidv4() , {height: (gridSizeX/gridSizeZ), width: (gridSizeX/gridSizeZ), depth: (gridSizeX/gridSizeZ) }, scene);   
-                 var  material = new BABYLON.StandardMaterial("matResourceObj_"+uuidv4(), scene);
-                 material.diffuseColor = new BABYLON.Color3(0.8, 0.4, 0.4);
-                    material.specularColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-                mesh.material = this.material;
-				
-             
-			  mesh .visibility = false;
-			  
-			  
-			   if(typeof sparkleCount === "undefined"){
-				 sparkleCount=1;
-				 }
- 
-			    // Create a particle system
-     particleSystem = new BABYLON.ParticleSystem("particles_"+uuidv4(), sparkleCount, scene);
- 
- //Texture of each particle
-     particleSystem.particleTexture = new BABYLON.Texture("static/images/particles/flare.png", scene);
-
-    // Where the particles come from
-     particleSystem.emitter = mesh;//BABYLON.Vector3.Zero(); // the starting location
-
-    // Colors of all particles
-   particleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
-   particleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
-   particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
-
-    // Size of each particle (random between...
-   particleSystem.minSize = 2;
-   particleSystem.maxSize = 8;
-
-    // Life time of each particle (random between...
-   particleSystem.minLifeTime = 1.5;
-   particleSystem.maxLifeTime = 1.5;
-
-    // Emission rate
-   particleSystem.emitRate = 50;
-
-
-    // Emission type
-    var hemisphericEmitter =new BABYLON.HemisphericParticleEmitter();
-    hemisphericEmitter.radiusRange = 0;
-    hemisphericEmitter.radis = 1.2;
-
-   particleSystem.particleEmitterType = hemisphericEmitter;
-
-    // Limit velocity
-   particleSystem.addLimitVelocityGradient(0, 1);
-   particleSystem.addLimitVelocityGradient(0.120, 0.983);
-   particleSystem.addLimitVelocityGradient(0.445, 0.780);
-   particleSystem.addLimitVelocityGradient(0.691, 0.502);
-   particleSystem.addLimitVelocityGradient(0.930, 0.05);
-   particleSystem.addLimitVelocityGradient(1.0, 0);
-
-   particleSystem.limitVelocityDamping = 0.6;
-
-    // Size over lifetime
-   particleSystem.addSizeGradient(0, 0.641);
-   particleSystem.addSizeGradient(0.344, 0.883);
-   particleSystem.addSizeGradient(0.615, 0.965);
-   particleSystem.addSizeGradient(1.0, 1.0);
-
-    // Speed
-   particleSystem.minEmitPower = 30;
-   particleSystem.maxEmitPower = 60;
-   particleSystem.updateSpeed = 1/60;
-
-    // Start the particle system
-   particleSystem.start();
-
-						mesh.position.x = x;
-                mesh.position.y = y;
-                mesh.position.z = z;
-			return mesh;
-			
-			}
-        var positionObj= function(x,y,z,isAllowedToDamage,isAllowedToTeleport)
-			{
-			             var position = new BABYLON.MeshBuilder.CreateBox("positionObj"+uuidv4(), {size: (gridSizeX/gridSizeZ)/4.0}, scene);
-						 var mat = new BABYLON.StandardMaterial("positionObjmat"+uuidv4(), scene);
-							  mat.diffuse = new BABYLON.Color3(1, 1, 1);
-							  mat.specular = new BABYLON.Color3(1, 1, 1);
-							 mat.diffuseColor= new BABYLON.Color3(.4, 1.4, .4);
-
-						  mat.backFaceCulling = false;
-						  position.material = mat;
-						  
-						position["isAllowedToDamage"] =isAllowedToDamage;
-						position["isAllowedToTeleport"] =isAllowedToTeleport;
-
-			position.position.x = x;
-                position.position.y = y;
-                position.position.z = z;
-				
-				if(aICount >= playerCount ||( aICount == 1 && Who ==1)){position.visibility = 0.0;}
-				
-				return position;
-
-			}
-			
-			var SquareInteractObj= function(x,y,z,sizeX,sizeY,sizeZ, TeamId, levelId,Health,MovementRange,DamageRange,dps, isWithSprite, imgUrl, ObjectGameName, specialId, specialDescription, isReversedColors)
-			{
-			             var obj = new BABYLON.MeshBuilder.CreateBox("InteractionObj"+uuidv4(), {size: gridSizeX/gridSizeZ  }, scene);
-						 var mat = new BABYLON.StandardMaterial("InteractionObjmat"+uuidv4(), scene);
-						 	 mat.diffuse = new BABYLON.Color3(1, 1, 1);
-							  mat.specular = new BABYLON.Color3(1, 1, 1);
-							  if(TeamId==0){mat.diffuseColor= new BABYLON.Color3(.1, 1.4, 1.4);}
-							  else if(TeamId==1){
-							mat.diffuseColor= new BABYLON.Color3(1.1, 1.4, 0.1);}
-  
- 						  mat.backFaceCulling = false;
-						  obj.material = mat;
-						  
-
-                obj.position.x = x;
-                obj.position.y = y;
-                obj.position.z = z;
-				
-				  obj.scaling.x = sizeX;
-                obj.scaling.y = sizeY;
-                obj.scaling.z = sizeZ;
-
-				obj["levelId"]=levelId;
-				 obj["TeamId"] =TeamId;
-				 
- 				   
-				  if(typeof dps === "undefined"){
-				 dps=1;
-				 }
-				  obj["dps"] =dps;
-
-				 if(typeof Health === "undefined"){
-				 Health=1;
-				 }
-				  obj["Health"] =Health;
-				   obj["MaxHealth"] =Health;
-
-				 if(typeof MovementRange === "undefined"){
-				 MovementRange=0;
-				 }
-				  obj["MovementRange"] =MovementRange;
-				  
-				 if(typeof DamageRange === "undefined"){
-				 DamageRange=1;
-				 }
-				  obj["DamageRange"] =DamageRange;
-
-				 if(typeof ObjectGameName === "undefined"){
-				 ObjectGameName="Nameless";
-				 }
-				  obj["ObjectGameName"] =ObjectGameName;
-
-				 if(typeof specialId === "undefined"){
-				 specialId=0;
-				 }
-				  obj["specialId"] =specialId;
-				  
-				 if(typeof specialDescription === "undefined"){
-				 specialDescription="";
-				 }
-				  obj["specialDescription"] =specialDescription;
-
-
-
-				if(isWithSprite){
-				
-				 if(typeof imgUrl === "undefined"){
-				 imgUrl="static/images/units/v_blanco_tiny.png";
-				 }
-				
-					 var planeSprite = new BABYLON.MeshBuilder.CreatePlane("myPlane_"+uuidv4(), {width: gridSizeX/gridSizeZ, height: gridSizeX/gridSizeZ,sideOrientation:BABYLON.Mesh.DOUBLESIDE}, scene);
-					   planeSprite.material = new BABYLON.StandardMaterial("myPlanemat_"+uuidv4(), scene);
-					   planeSprite.material.diffuseTexture= new BABYLON.Texture(imgUrl, scene);
-					   planeSprite.parent= obj;
-					   
-					   planeSprite.material.diffuseTexture.hasAlpha = true; //important for trans png! https://forum.babylonjs.com/t/transparent-image-not-showing-correctly-on-plane-material/11008
-planeSprite.material.useAlphaFromDiffuseTexture = true;
-
-
-
-					  	planeSprite.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;//REF:https://www.html5gamedevs.com/topic/25381-how-to-make-mesh-face-camera/
-
-			 // obj .visibility = false;
-			  
- 			if(levelId ==1){planeSprite.rotation.z=   1.57;ObjectGameName="Horse";} //horse
-			else  if(levelId ==2){ planeSprite.rotation.z= -1.57;ObjectGameName="Bishop";} //bishop
-			else  if(levelId ==3){planeSprite.rotation.z= 0;ObjectGameName="Rook";} //rook
-			else  if(levelId ==4){planeSprite.rotation.z=   3.15; ObjectGameName="Queen";} //queen
-		//	else  if(levelId ==5){planeSprite.rotation.z=-2.35;}//simple pawn base has this rotation
-			else  if(levelId ==6){ planeSprite.material.diffuseTexture= new BABYLON.Texture("static/images/units/v_chess_zero.png", scene);obj.id="mine"+uuidv4();ObjectGameName="Mine";}// MINE
-            else  if(levelId ==7){ planeSprite.material.diffuseTexture= new BABYLON.Texture("static/images/units/v_chess_zero.png", scene);//alt:v_chess_zero_Rotated
-			}
-			
-				if ((TeamId==0 && !isReversedColors)|| (TeamId==1&& isReversedColors)) {
- 					
-					                    planeSprite.material.diffuseColor = new BABYLON.Color3(.1, 1.4, 1.4);
-                    planeSprite.material.specularColor = new BABYLON.Color3(.1, 1.4, 1.4);
-
-                } else if ((TeamId==1 && !isReversedColors) || (TeamId==0 && isReversedColors)) {
- 					
-					                    planeSprite.material.diffuseColor = new BABYLON.Color3(1.1, 1.4, 0.1);
-                    planeSprite.material.specularColor = new BABYLON.Color3(1.1, 1.4, 0.1);
-
-                }
-				}
-				
- 			 if(isWithSprite){ obj.getChildren()[0].visibility =0.5;			obj.visibility = 0.0;}else{obj.visibility = 0.5;}
-
-obj["pionNumberOnField"]=pionObjectCount;
-
-pionObjectCount+=1;
-
-				return obj;
-
-			}
-				var SphereBlockObj= function(x,y,z,sizeX,sizeY,sizeZ, isWithSprite,isMine, damageCount, opacity)
-			{
-			var obj = BABYLON.MeshBuilder.CreateSphere("SphereBlockObj"+uuidv4(), {size: gridSizeX/gridSizeZ  }, scene);  
-						 var mat = new BABYLON.StandardMaterial("SphereBlockObjmat"+uuidv4(), scene);
-						 	 mat.diffuse = new BABYLON.Color3(1, 1, 1);
-							  mat.specular = new BABYLON.Color3(1, 1, 1);
- 							mat.diffuseColor= new BABYLON.Color3(0, 0, 0); 
-			obj.visibility = 0.5;
-
- 						  mat.backFaceCulling = false;
-						  obj.material = mat;
-						  
-
-                obj.position.x = x;
-                obj.position.y = y;
-                obj.position.z = z;
-				
-				  obj.scaling.x = sizeX;
-                obj.scaling.y = sizeY;
-                obj.scaling.z = sizeZ;
-
- 
- 				  if(typeof isMine === "undefined"){
-				 isMine=0;
-				 }
-				  obj["isMine"] =isMine;
-
-				 if(typeof damageCount === "undefined"){
-				 damageCount=0;
-				 }
-				  obj["damageCount"] =damageCount;
-
-
-if(isWithSprite){
-					 var planeSprite = new BABYLON.MeshBuilder.CreatePlane("myPlane_"+uuidv4(), {width: gridSizeX/gridSizeZ, height: gridSizeX/gridSizeZ,sideOrientation:BABYLON.Mesh.DOUBLESIDE}, scene);
-					   planeSprite.material = new BABYLON.StandardMaterial("myPlanemat_"+uuidv4(), scene);
-					   planeSprite.material.diffuseTexture= new BABYLON.Texture("static/images/units/v_chess_zero.png", scene);
-					   planeSprite.parent= obj;
- 						  } 
-			 
-				 
- 				  if(typeof opacity === "undefined"){
-				 opacity=0.0;// default 0.5
-				 }
-
- 			 if(isWithSprite){ obj.getChildren()[0].visibility =opacity;			obj.visibility = 0.0;}else{obj.visibility = opacity;}
-
-				return obj;
-
-			}
-			
-			
-			var GroundObj = function(gridSizeX, gridSizeY, gridSizeZ, img,gLevels)
-			{
-			for (var f = 0; f < gLevels; f++) {
-			            var ground = BABYLON.Mesh.CreateGround("ground" , gridSizeX, gridSizeY, gridSizeZ, scene);
-            ground.material = new BABYLON.StandardMaterial("grdmat", scene);
-            ground.material.wireframe = false;
-			
-			ground.position.y-=f;
-			
-			ground["floorId"] =f;
-
-			if(typeof img ==="undefined")
-			{
-			img ="static/images/decor/HoloGraph_Chess_Board_Transparent.png"
-			
-			}
-			
-				if(typeof gLevels ==="undefined")
-			{
-			gLevels=1
-			
-			}
-        	 ground.material.diffuseTexture= new BABYLON.Texture(img, scene);
-		ground.material.diffuseTexture.hasAlpha  = true;
-		ground.visibility  = 0.3;
-		//ground.material.specularColor = new BABYLON.Color3(0, 0, 0); https://stackoverflow.com/questions/46862168/babylon-js-remove-light-reflection-of-sphere
-					   ground.material.diffuseTexture.hasAlpha = true;     
-ground.material.useAlphaFromDiffuseTexture = true;
-//ground.isPickable=false;
-//ground.material.isPickable=false;
-
-}
-return ground;
-																			
-
-			}
-			var isJumpOverObjectCheck= function(damage)
-			{
-			var isObjPresent=false;
- 						
-			scene.meshes.forEach(function(g) {
-  												  if(g != damage && g.name.indexOf("InteractionObj") >-1  ){
-							   if (g.position.x == damage.position.x && g.position.z == damage.position.z &&  g.position != activePlayer.position)
- 											{ 
-							isObjPresent=true; return false;
-											  }
-											  }
-											  });
- 				 
-				
-				return isObjPresent;
-			}
-				var isJumpOverBlockCheck= function(damage)
-			{
-			var isObjPresent=false;
- 						
-			scene.meshes.forEach(function(g) {
-  												  if( g.name.indexOf("SphereBlockObj") >-1  ){
-							   if (g.position.x == damage.position.x && g.position.z == damage.position.z &&  g.position != activePlayer.position)
- 											{ 
-							isObjPresent=true; return false;
-											  }
-											  }
-											  });
- 				 
-				
-				return isObjPresent;
-			}		
-		 
-			
-
-			var movementRight= function (object, steps, isCanDoDamageOnField, isCanJumpOverObjects, isCanJumpOverObstacles) //position p1
-			{
-																for (var f = 0; f < groundLevels; f++) {
-
-				for (var i = 0; i < steps; i++) {
-				if( f > i){continue;}
-				var damage= positionObj(object.position.x+i,0.5-f,object.position.z );
-				if(!isCanJumpOverObstacles){
-				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
- 											  
-				}
-			}
-				
-				damage["isAllowedToDamage"]= isCanDoDamageOnField;
-				 damage["stepID"]=i; // the distance from the start position.
-				
- if( isCanDoDamageOnField){
-				  damage.material.diffuseColor= new BABYLON.Color3(1.4, .4, .4);
-				//  damage.material.emissiveColor = new BABYLON.Color3(.4, .4, .4);
-damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
-			} else{damage["isStandAllowedOnDamageField"]= true;}
-
-			if(!isCanJumpOverObjects){
-				if(isJumpOverObjectCheck(damage)){ if(!isCanDoDamageOnField){damage.dispose();}break;
- 											  
-				}
-			}}}}
-				var movementLeft= function (object, steps, isCanDoDamageOnField, isCanJumpOverObjects, isCanJumpOverObstacles)
-			{
-													for (var f = 0; f < groundLevels; f++) {
-
-				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
-
- 				 var damage=positionObj(object.position.x-i,0.5-f,object.position.z );
-				 if(!isCanJumpOverObstacles){
-				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
- 											  
-				}
-			}
-				
-				 				damage["isAllowedToDamage"]= isCanDoDamageOnField;
-				 damage["stepID"]=i; // the distance from the start position.
-								
- if( isCanDoDamageOnField){
-				  damage.material.diffuseColor= new BABYLON.Color3(1.4, .4, .4);
-				//  damage.material.emissiveColor = new BABYLON.Color3(.4, .4, .4);
-damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
-			} else{damage["isStandAllowedOnDamageField"]= true;}
-			
-			 if(!isCanJumpOverObjects){
-				if(isJumpOverObjectCheck(damage)){ if(!isCanDoDamageOnField){damage.dispose();}break;
- 											  
-				}
-			}}}}
-				var movementUp= function (object, steps, isCanDoDamageOnField, isCanJumpOverObjects, isCanJumpOverObstacles)
-			{
-										for (var f = 0; f < groundLevels; f++) {
-
-				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
-
- 				var damage= positionObj(object.position.x,0.5-f,object.position.z+i );
-				 
-if(!isCanJumpOverObstacles){
-				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
- 											  
-				}
-			}
-				damage["isAllowedToDamage"]= isCanDoDamageOnField;
-				 damage["stepID"]=i; // the distance from the start position.
-
- if( isCanDoDamageOnField){
-				  damage.material.diffuseColor= new BABYLON.Color3(1.4, .4, .4);
-				//  damage.material.emissiveColor = new BABYLON.Color3(.4, .4, .4);
-
-damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
-			} else{damage["isStandAllowedOnDamageField"]= true;}
-
-			if(!isCanJumpOverObjects){
-				if(isJumpOverObjectCheck(damage)){ if(!isCanDoDamageOnField){damage.dispose();}break;
- 											  
-				}
-			}}}
-			}
-				var movementDown= function (object, steps, isCanDoDamageOnField, isCanJumpOverObjects, isCanJumpOverObstacles)
-			{
-							for (var f = 0; f < groundLevels; f++) {
-
-				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
-
- 				var damage= positionObj(object.position.x,0.5-f,object.position.z-i );
-				
-				if(!isCanJumpOverObstacles){
-				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
- 											  
-				}
-			}
- damage["isAllowedToDamage"]= isCanDoDamageOnField;
-				 damage["stepID"]=i; // the distance from the start position.
-
-if( isCanDoDamageOnField){
-				  damage.material.diffuseColor= new BABYLON.Color3(1.4, .4, .4);
-				//  damage.material.emissiveColor = new BABYLON.Color3(.4, .4, .4);
-damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
-			} else{damage["isStandAllowedOnDamageField"]= true;}
-			
-			if(!isCanJumpOverObjects){ 
-				if(isJumpOverObjectCheck(damage)){ if(!isCanDoDamageOnField){damage.dispose();}break;
-				break;}
- 											  
-				}
-			}
-			 
-			}
-			}
-				var movementLeftDown= function (object, steps, isCanDoDamageOnField, isCanJumpOverObjects, isCanJumpOverObstacles)
-			{
-			for (var f = 0; f < groundLevels; f++) {
-				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
-
- 				var damage= positionObj(object.position.x-i,0.5-f,object.position.z-i );
-				if(!isCanJumpOverObstacles){
-				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
- 											  
-				}
-			}
-				 damage["isAllowedToDamage"]= isCanDoDamageOnField;
-				 damage["stepID"]=i; // the distance from the start position.
-if( isCanDoDamageOnField){
-				  damage.material.diffuseColor= new BABYLON.Color3(1.4, .4, .4);
-				//  damage.material.emissiveColor = new BABYLON.Color3(.4, .4, .4);
-damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
-			} else{damage["isStandAllowedOnDamageField"]= true;}
-			
-				if(!isCanJumpOverObjects){
-				if(isJumpOverObjectCheck(damage)){ if(!isCanDoDamageOnField){damage.dispose();} break;
- 											  
-				}
-			} }
-			
-			}}
-			
-				var movementRightDown= function (object, steps, isCanDoDamageOnField, isCanJumpOverObjects, isCanJumpOverObstacles)
-			{
-			for (var f = 0; f < groundLevels; f++) {
-				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
-
- 				var damage= positionObj(object.position.x+i,0.5-f,object.position.z-i );
-				if(!isCanJumpOverObstacles){
-				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
- 											  
-				}
-			}
-				 damage["isAllowedToDamage"]= isCanDoDamageOnField;
-				 damage["stepID"]=i; // the distance from the start position.
-				 
-if( isCanDoDamageOnField){
-				  damage.material.diffuseColor= new BABYLON.Color3(1.4, .4, .4);
-				//  damage.material.emissiveColor = new BABYLON.Color3(.4, .4, .4);
-damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
-			} else{damage["isStandAllowedOnDamageField"]= true;}
-			
-				if(!isCanJumpOverObjects){
-				if(isJumpOverObjectCheck(damage)){ if(!isCanDoDamageOnField){damage.dispose();} break;
- 											  
-				}
-			} 
-			}
-			}}
-			
-			var movementRightUp= function (object, steps, isCanDoDamageOnField, isCanJumpOverObjects, isCanJumpOverObstacles)
-			{
-				for (var f = 0; f < groundLevels; f++) {
-				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
-
- 				var damage= positionObj(object.position.x+i,0.5-f,object.position.z+i );
-				if(!isCanJumpOverObstacles){
-				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
- 											  
-				}
-			}
-				 damage["isAllowedToDamage"]= isCanDoDamageOnField;
-				 damage["stepID"]=i; // the distance from the start position.
-				 
-if( isCanDoDamageOnField){
-				  damage.material.diffuseColor= new BABYLON.Color3(1.4, .4, .4);
-				//  damage.material.emissiveColor = new BABYLON.Color3(.4, .4, .4);
-damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
-			} else{damage["isStandAllowedOnDamageField"]= true;}
-
-				if(!isCanJumpOverObjects){
-				if(isJumpOverObjectCheck(damage)){ if(!isCanDoDamageOnField){damage.dispose();} break;
- 											  
-				}
-			} }
-			
-			}}
-			
-				var movementLeftUp= function (object, steps, isCanDoDamageOnField, isCanJumpOverObjects, isCanJumpOverObstacles)
-			{
-			for (var f = 0; f < groundLevels; f++) {
-				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
-
- 				var damage= positionObj(object.position.x-i,0.5-f,object.position.z+i ); 
-				
-				  if(!isCanJumpOverObstacles){
-				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
- 											  
-				}
-			}
-				 damage["isAllowedToDamage"]= isCanDoDamageOnField;
-				 damage["stepID"]=i; // the distance from the start position.
-				 
-				if( isCanDoDamageOnField){
-				  damage.material.diffuseColor= new BABYLON.Color3(1.4, .4, .4);
-				//  damage.material.emissiveColor = new BABYLON.Color3(.4, .4, .4);
-damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
-			} else{damage["isStandAllowedOnDamageField"]= true;}
-
-				if(!isCanJumpOverObjects){
-				if(isJumpOverObjectCheck(damage)){ if(!isCanDoDamageOnField){damage.dispose();} break;
- 											  
-				}
-			}
-			} } 
-			
-			}
 			
 			var clearNonTargetsPositioningsObjectsOnScene= function () {
 			var isHitPossible=false;
@@ -1136,12 +504,25 @@ scene.meshes.forEach(function(m) {
 if(m.name.indexOf("positionObj") >-1)
 			{
 			 
-		 if(m.position.x <= borderX && m.position.x >=-borderX && m.position.z <= borderZ && m.position.z >= -borderZ){/* you can live */}
+		 if(m.position.y <= borderYTop && m.position.y >=-borderY && m.position.x <= borderX && m.position.x >=-borderX && m.position.z <= borderZ && m.position.z >= -borderZ){/* you can live */}
 		 else{m.dispose();}
 			 
 			}
 });
  }
+			}
+			
+				var HideBlockObjectsOnScene= function () {
+
+scene.meshes.forEach(function(m) {
+if(   m.name.indexOf("SphereBlockObj") >-1 )
+			{
+ 		  m.isPickable=false;
+ 			 if(isInteractionMeshesUseSprites && typeof m.getChildren()[0] !== "undefined"){ m.getChildren()[0].visibility =0.0;			m.visibility = 0.0;}else{m.visibility = 0.0;}
+			 
+			}
+});
+  
 			}
         var createScene = function () {
         
@@ -1153,7 +534,7 @@ if(m.name.indexOf("positionObj") >-1)
             camera.attachControl(canvas, true);
         ////////////////////////////////// Minimap////////////////////////////////////////////////
    if(isWithMinimap){
-   var mm = new BABYLON.FreeCamera("minimap", new BABYLON.Vector3(0,10,0), scene);
+     mm = new BABYLON.FreeCamera("minimap", new BABYLON.Vector3(0,10,0), scene);
     mm.layerMask = 1;
     mm.setTarget(new BABYLON.Vector3(1,0.1,0.1));
     mm.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
@@ -1200,70 +581,310 @@ Who= randomInteger(0,playerCount-1);	 //Random starter
 
 }
 }
-customSpriteMonster= function(obj,spriteImgUrl)
-			{
-			
-			    var spriteMonsterManager = new BABYLON.SpriteManager("spriteMonsterManager", spriteImgUrl, 1, 768, scene);
-          var Monster = new BABYLON.Sprite("Monster", spriteMonsterManager);
- 		Monster.height = (gridSizeX/gridSizeZ) -0.2;
-		 		Monster.width = (gridSizeX/gridSizeZ) -0.2;
 
-        Monster.isPickable = false;
-							   Monster.parent= obj;
-							   Monster.position= obj.position;
-							   
-				obj.getChildren()[0].material.diffuseTexture= new BABYLON.Texture(spriteImgUrl, scene);// for info "static/images/units/dummy.png", scene);
-
-			}
+ 
+ 
 			customHorse= function(posX,posY,posZ, teamId, isAbstract)
 			{
 			if(isAbstract){
-			return 		SquareInteractObj(posX,posY,posZ,(gridSizeX/gridSizeZ)-1.2,gridSizeX/gridSizeZ,(gridSizeX/gridSizeZ)-1.2,teamId,1,7,4  ,8 ,5,isInteractionMeshesUseSprites,undefined,"Knight",-1,"",isColorSwitchSide) // 4
+			return 		SquareInteractObj(posX,posY,posZ,(gridSizeX/gridSizeZ)-1.2,(gridSizeX/gridSizeZ)-0.1,(gridSizeX/gridSizeZ)-1.2,teamId,1,7,4  ,8 ,5,isInteractionMeshesUseSprites,undefined,"Knight",-1,"",isColorSwitchSide) // 4
 
 			}
 			else{
-				return		SquareInteractObj(posX,posY,posZ,gridSizeX/gridSizeZ-0.2,gridSizeX/gridSizeZ,gridSizeX/gridSizeZ-0.2,teamId,1,5,4 ,8 ,5,isInteractionMeshesUseSprites,undefined,"Knight",-1,"",isColorSwitchSide)  
+				var item=	SquareInteractObj(posX,posY,posZ,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,teamId,1,5,4 ,8 ,5,isInteractionMeshesUseSprites,"static/images/units/v_4.png","Knight",-1,"",isColorSwitchSide)  
+ 				return item;
 				}
 			}
 			customKing= function(posX,posY,posZ, teamId, isAbstract)
 			{
 			if(isAbstract){
-			return 				SquareInteractObj (posX,posY,posZ,gridSizeX/gridSizeZ-0.2,gridSizeX/gridSizeZ,gridSizeX/gridSizeZ-0.2,teamId,4,8,7 ,5 ,4,isInteractionMeshesUseSprites,undefined,"King" ,-1,"",isColorSwitchSide)//nr val. 7
+			return 				SquareInteractObj (posX,posY,posZ,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,teamId,4,8,7 ,5 ,4,isInteractionMeshesUseSprites,undefined,"King" ,-1,"",isColorSwitchSide)//nr val. 7
 
 			}
 			else{
- 				return 	 		SquareInteractObj (posX,posY,posZ,gridSizeX/gridSizeZ-0.2,gridSizeX/gridSizeZ,gridSizeX/gridSizeZ-0.2,teamId,4,8,7 ,5 ,4,isInteractionMeshesUseSprites,undefined,"King",-1,"",isColorSwitchSide)//nr 7
+ 				var item=	 	 		SquareInteractObj (posX,posY,posZ,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,teamId,4,8,7 ,5 ,4,isInteractionMeshesUseSprites,"static/images/units/v_7.png","King",-1,"",isColorSwitchSide)//nr 7
+ 
+				return item;
+
 				}
 			}
 			customPawn= function(posX,posY,posZ, teamId, isAbstract)
 			{
 				if(isAbstract){
-				return 		SquareInteractObj( posX,posY,posZ,(gridSizeX/gridSizeZ)-1.6,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ)-1.2,teamId,3,4,5 ,7 ,8,isInteractionMeshesUseSprites,undefined ,"Pawn(s)" ,-1,"",isColorSwitchSide) //nr 5
+				return 		SquareInteractObj( posX,posY,posZ,(gridSizeX/gridSizeZ)-1.6,(gridSizeX/gridSizeZ)-0.1 ,(gridSizeX/gridSizeZ)-1.2,teamId,3,4,5 ,7 ,8,isInteractionMeshesUseSprites,undefined ,"Pawn(s)" ,-1,"",isColorSwitchSide) //nr 5
 
 			}
 			else{
 			
-			return		 	SquareInteractObj(posX,posY,posZ,gridSizeX/gridSizeZ-0.2,gridSizeX/gridSizeZ,gridSizeX/gridSizeZ-0.2,teamId,3,4,5 ,7 ,8,isInteractionMeshesUseSprites, undefined,"Pawn(s)",-1,"",isColorSwitchSide) //nr5
+			var item=			 	SquareInteractObj(posX,posY,posZ,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,teamId,3,4,5 ,7 ,8,isInteractionMeshesUseSprites, "static/images/units/v_5.png","Pawn(s)",-1,"",isColorSwitchSide) //nr5
+ 
+				return item;
+
 				}
 				}
 			customBishop= function(posX,posY,posZ, teamId, isAbstract)
 			{
 				if(isAbstract){
-				return  		SquareInteractObj( posX,posY,posZ,(gridSizeX/gridSizeZ)-1.1,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ)-1.8,teamId,2,5,8 ,4,7,isInteractionMeshesUseSprites,undefined,"Bishop",-1,"",isColorSwitchSide )//nr8 bottom
+				return  		SquareInteractObj( posX,posY,posZ,(gridSizeX/gridSizeZ)-1.1,(gridSizeX/gridSizeZ)-0.1 ,(gridSizeX/gridSizeZ)-1.8,teamId,2,5,8 ,4,7,isInteractionMeshesUseSprites,undefined,"Bishop",-1,"",isColorSwitchSide )//nr8 bottom
 
 			}
 			else{
-  		return  	 SquareInteractObj(posX,posY,posZ,gridSizeX/gridSizeZ-0.2,gridSizeX/gridSizeZ,gridSizeX/gridSizeZ-0.2,teamId,2,5,8 ,4 ,7,isInteractionMeshesUseSprites,undefined,"Bishop",-1,"",isColorSwitchSide);
-	}}
+  		var item=	  	 SquareInteractObj(posX,posY,posZ,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,teamId,2,5,8 ,4 ,7,isInteractionMeshesUseSprites,"static/images/units/v_8.png","Bishop",-1,"",isColorSwitchSide);
+ 				return item;
+
+	}
+	}
 			startObjects  = function()
 			{
 			
 			var p1BlueItems=0;
 			var p2YellowItems=1;
 		
-			if(isSpaceChess){
-			var borderX=1.0;
-var borderZ=1.0;
+		
+		
+		if( isClassicChess){
+		
+					  borderX=4.0;
+  borderZ= 4.0;
+borderY=groundLevels-1;
+borderYTop=1.0;
+		isCustomDPS= true;
+isInteractionMeshesUseSprites=true;
+    isAttackOrMoveAndAttack=false; 
+  isStandAllowedOnDamageField=false;
+
+
+mm.position.y -=8;
+			//  ground=GroundObj(8,8,10, "static/images/decor/chessboards/10x8ChessBoard.png",groundLevels);
+			   GroundObj(9,9,9, "static/images/decor/chessboards/Beyond_Chess/9x9ChessBoardBeyond.png",groundLevels);
+			  
+			   groundArray[0].material.diffuseTexture = new BABYLON.Texture("static/images/decor/chessboards/Beyond_Chess/9x9ChessBoardBeyondChessTop.png", scene);
+		   groundArray[0].material.diffuseTexture.hasAlpha  = true;
+		   groundArray[0].visibility  = 0.3;
+ 					      groundArray[0].material.diffuseTexture.hasAlpha = true;     
+			groundArray[0].material.useAlphaFromDiffuseTexture = true;
+  groundArray[0].isPickable=false;
+
+			   groundArray[groundArray.length-1].material.diffuseTexture = new BABYLON.Texture("static/images/decor/chessboards/Beyond_Chess/9x9ChessBoardBeyondChessBottom.png", scene);
+		   groundArray[groundArray.length-1].material.diffuseTexture.hasAlpha  = true;
+		   groundArray[groundArray.length-1].visibility  = 0.3;
+ 					      groundArray[groundArray.length-1].material.diffuseTexture.hasAlpha = true;     
+			groundArray[groundArray.length-1].material.useAlphaFromDiffuseTexture = true;
+  groundArray[groundArray.length-1].isPickable=false;
+
+
+			   groundArray[1].material.diffuseTexture = new BABYLON.Texture("static/images/decor/chessboards/Beyond_Chess/9x9ChessBoardBeyondChessMiddleTop.png", scene);
+		   groundArray[1].material.diffuseTexture.hasAlpha  = true;
+		   groundArray[1].visibility  = 0.3;
+ 					      groundArray[1].material.diffuseTexture.hasAlpha = true;     
+			groundArray[1].material.useAlphaFromDiffuseTexture = true;
+
+			   groundArray[groundArray.length-2].material.diffuseTexture = new BABYLON.Texture("static/images/decor/chessboards/Beyond_Chess/9x9ChessBoardBeyondChessMiddleBottom.png", scene);
+		   groundArray[groundArray.length-2].material.diffuseTexture.hasAlpha  = true;
+		   groundArray[groundArray.length-2].visibility  = 0.3;
+ 					      groundArray[groundArray.length-2].material.diffuseTexture.hasAlpha = true;     
+			groundArray[groundArray.length-2].material.useAlphaFromDiffuseTexture = true;
+
+
+			   groundArray[Math.floor(groundArray.length/2)].material.diffuseTexture = new BABYLON.Texture("static/images/decor/chessboards/Beyond_Chess/9x9ChessBoardBeyondChessCenter.png", scene);
+		   groundArray[Math.floor(groundArray.length/2)].material.diffuseTexture.hasAlpha  = true;
+		   groundArray[Math.floor(groundArray.length/2)].visibility  = 0.3;
+ 					      groundArray[Math.floor(groundArray.length/2)].material.diffuseTexture.hasAlpha = true;     
+			groundArray[Math.floor(groundArray.length/2)].material.useAlphaFromDiffuseTexture = true;
+  groundArray[Math.floor(groundArray.length/2)].isPickable=false;
+
+
+
+	if(isColorSwitchSide){
+						  p1BlueItems=1;
+			  p2YellowItems=0;
+
+			}
+ 
+ var pawnImg= "static/images/units/v_5.png";
+ var queenImg="static/images/units/v_6.png";
+ var kingImg= "static/images/units/v_7.png";
+ var rookImg="static/images/units/v_3.png";
+ var bishopImg="static/images/units/v_2.png";
+ var knightImg="static/images/units/v_1.png";
+ 
+ if(isWithNormalChessPieces)
+ {
+    pawnImg= "static/images/units/Classic_Chess_Pieces/pawn.png";
+   queenImg="static/images/units/Classic_Chess_Pieces/queen.png";
+   kingImg= "static/images/units/Classic_Chess_Pieces/king.png";
+   rookImg="static/images/units/Classic_Chess_Pieces/rook.png";
+   bishopImg="static/images/units/Classic_Chess_Pieces/bishop.png";
+   knightImg="static/images/units/Classic_Chess_Pieces/knight.png";
+
+ }
+ 
+ 
+ if(is3DChess){// also good for shogi f.e.
+SquareInteractObj(-3.0,groundArray[groundArray.length-1].position.y+0.5,4.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,8,8 ,5,isInteractionMeshesUseSprites,rookImg,"Rook",-1,"",isColorSwitchSide)}
+SquareInteractObj(-2.0,groundArray[groundArray.length-1].position.y+0.5,4.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,8,8 ,5,isInteractionMeshesUseSprites,queenImg,"Queen",-1,"",isColorSwitchSide)
+
+SquareInteractObj(-2.0,groundArray[groundArray.length-2].position.y+0.5,3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,5,5 ,5,isInteractionMeshesUseSprites,bishopImg,"Bishop", -1,"",isColorSwitchSide)
+SquareInteractObj(-1.0,groundArray[groundArray.length-2].position.y+0.5,3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,3 ,3 ,5,isInteractionMeshesUseSprites,knightImg,"Knight",-1,"",isColorSwitchSide)
+
+SquareInteractObj(1.0,groundArray[groundArray.length-2].position.y+0.5,3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,3 ,3 ,5,isInteractionMeshesUseSprites,knightImg,"Knight",-1,"",isColorSwitchSide)
+SquareInteractObj(2.0,groundArray[groundArray.length-2].position.y+0.5,3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,5,5 ,5,isInteractionMeshesUseSprites,bishopImg,"Bishop" ,-1,"",isColorSwitchSide)
+
+ SquareInteractObj(2.0,groundArray[groundArray.length-1].position.y+0.5,4.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,1 ,1 ,5,isInteractionMeshesUseSprites,kingImg,"King",-1,"",isColorSwitchSide)
+if(is3DChess){SquareInteractObj(3.0,groundArray[groundArray.length-1].position.y+0.5,4.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,8,8 ,5,isInteractionMeshesUseSprites,rookImg,"Rook",-1,"",isColorSwitchSide)}
+
+if(is3DChess){SquareInteractObj(-3.0,groundArray[groundArray.length-1].position.y+0.5,3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,2 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)}
+SquareInteractObj(-2.0,groundArray[groundArray.length-1].position.y+0.5,3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,2 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)
+
+SquareInteractObj(-2.0,groundArray[groundArray.length-2].position.y+0.5,2.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,2 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)
+SquareInteractObj(-1.0,groundArray[groundArray.length-2].position.y+0.5,2.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,2 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)
+//SquareInteractObj(-0.0,groundArray[groundArray.length-2].position.y+0.5,2.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,2 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)
+SquareInteractObj(1.0,groundArray[groundArray.length-2].position.y+0.5,2.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,2 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)
+SquareInteractObj(2.0,groundArray[groundArray.length-2].position.y+0.5,2.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,2 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)
+
+SquareInteractObj(2.0,groundArray[groundArray.length-1].position.y+0.5,3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,2 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)
+if(is3DChess){SquareInteractObj(3.0,groundArray[groundArray.length-1].position.y+0.5,3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p2YellowItems,1,1,2 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)}
+
+
+
+    	  if(is3DChess){	  SquareInteractObj(-3.0,.5,-4.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,8,8 ,5,isInteractionMeshesUseSprites,rookImg,"Rook",-1,"",isColorSwitchSide)}
+    	  player=	 SquareInteractObj(-2.0,.5,-4.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,8,8 ,5,isInteractionMeshesUseSprites,queenImg,"Queen",-1,"",isColorSwitchSide)  
+    	  	
+			SquareInteractObj(-2.0,groundArray[1].position.y+0.5,-3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,5,5 ,5,isInteractionMeshesUseSprites,bishopImg,"Bishop",-1,"",isColorSwitchSide)  
+    	  	 SquareInteractObj(-1.0,groundArray[1].position.y+0.5,-3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,3 ,3 ,5,isInteractionMeshesUseSprites,knightImg,"Knight",-1,"",isColorSwitchSide)  
+
+    	  	 SquareInteractObj(1.0,groundArray[1].position.y+0.5,-3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,3 ,3 ,5,isInteractionMeshesUseSprites,knightImg, "Knight",-1,"",isColorSwitchSide)  
+			     	  	 SquareInteractObj(2.0,groundArray[1].position.y+0.5,-3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,5,5 ,5,isInteractionMeshesUseSprites,bishopImg,"Bishop",-1,"",isColorSwitchSide)  //Note: bishop max 5 steps in this setting 3D has a hole in the center
+    	  	
+			SquareInteractObj(2.0,.5,-4.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,1 ,1 ,5,isInteractionMeshesUseSprites,kingImg,"King",-1,"",isColorSwitchSide)  
+ if(is3DChess){SquareInteractObj(3.0,.5,-4.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,8,8,5,isInteractionMeshesUseSprites,rookImg,"Rook",-1,"",isColorSwitchSide)}
+
+    if(is3DChess){	  	 
+	         SquareInteractObj(-3.0,.5,-3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,2 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)}    	  	
+			SquareInteractObj(-2.0,.5,-3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,2 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)  
+
+    	  	 SquareInteractObj(-2.0,groundArray[ 1].position.y+0.5,-2.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,1 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)  
+    	  	 SquareInteractObj(-1.0,groundArray[1].position.y+0.5,-2.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,1 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)  
+    	  //	 SquareInteractObj(-0.0,groundArray[1].position.y+0.5,-2.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,1 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)  
+    	  	 SquareInteractObj(1.0,groundArray[1].position.y+0.5,-2.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,1 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)  
+			     	  	 SquareInteractObj(2.0,groundArray[1].position.y+0.5,-2.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,1 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)  
+    	 
+		 SquareInteractObj(2.0,.5,-3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,1 ,1,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)  
+if(is3DChess){SquareInteractObj(3.0,.5,-3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,1 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)}
+
+
+ 
+for (var i = -2; i < 5; i++) {
+ 
+ SphereBlockObj(4,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(3,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(2,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(1,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(0,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-4,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-3,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-2,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-1,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ 
+
+}
+
+ /*for (var g = 0; g< 1; g++) {
+
+for (var i = -4; i < 5; i++) {
+ 
+ SphereBlockObj(4,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(3,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(2,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(1,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(0,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-4,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-3,2+g,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-2,2+g +g,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-1,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ 
+}
+}*/
+
+for (var i = -4; i < 5; i++) {
+
+ SphereBlockObj(i,-1 ,-4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+  SphereBlockObj(i,-2 ,-4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+  SphereBlockObj(i,-3 ,-4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+
+    SphereBlockObj(i,-2 ,-3,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+
+}
+for (var i = -1; i < 2; i++) { /// 3 in betweens blue
+
+ SphereBlockObj(i,1 ,-4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ)*2 ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+  SphereBlockObj(i,1 ,-3,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ)*2 ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+
+}
+  
+
+  for (var i = -4; i < 3; i++) {
+ 
+ SphereBlockObj(4,-groundArray.length+1  ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(3,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(2,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(1,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(0,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-4,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-3,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-2,-groundArray.length+1,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-1,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ 
+ 
+}
+
+
+ 
+  for (var i = -4; i < 5; i++) {
+
+ SphereBlockObj(i,-groundArray.length+3 ,4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+  SphereBlockObj(i,-groundArray.length+4 ,4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+  SphereBlockObj(i,-groundArray.length+5 ,4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+
+  SphereBlockObj(i,-groundArray.length+4 ,3,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+
+} 
+
+ for (var i = -1; i <2; i++) { /// 3 in betweens yellow
+
+ SphereBlockObj(i,-groundArray.length+1   ,4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+  SphereBlockObj(i,-groundArray.length+1   ,3,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+
+} 
+
+//CENTER Parts:
+  for (var i = -1; i < 5; i++) {
+
+ SphereBlockObj(0,-1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ } 
+  for (var i = -2; i < 2; i++) { // center side blue
+
+ SphereBlockObj(0,-2 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+   SphereBlockObj(0, -groundArray.length+2,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4 ) ,false,0,0,1)
+
+ } 
+  for (var i = -1; i < 5; i++) { // side yellow
+
+ SphereBlockObj(0,0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ 
+ } 
+
+				 	HideBlockObjectsOnScene();
+
+		}
+		
+		
+			else if(isSpaceChess){
+					  borderX=3.0;
+  borderZ= 3.0;
+  borderY=groundLevels ;
+borderYTop=1.5;
+
 isCustomDPS= false;
 isInteractionMeshesUseSprites=true;
 isAttackOrMoveAndAttack=true;
@@ -1275,34 +896,35 @@ isStandAllowedOnDamageField=false;
 
 			}
 			
- 			var obj=SquareInteractObj(1.0,.5,2.0,(gridSizeX/gridSizeZ)-0.22,gridSizeX/gridSizeZ,(gridSizeX/gridSizeZ)-0.22,p2YellowItems,10,4,2,1,2,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Ghhhk.png","Ghhhk",1,"Recover (After action randomly heal an ally)",isColorSwitchSide)  
+			//NOte: -0.05 on y for multi-layer handling
+
+ 			var obj=SquareInteractObj(1.0,.5,2.0,(gridSizeX/gridSizeZ)-0.22,(gridSizeX/gridSizeZ)-0.05,(gridSizeX/gridSizeZ)-0.22,p2YellowItems,10,4,2,1,2,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Ghhhk.png","Ghhhk",1,"Recover (After action randomly heal an ally)",isColorSwitchSide)  
  					obj.getChildren()[0].rotation.z  =0.0 
 
 
-  			obj=SquareInteractObj(0.0,.5,2.0,(gridSizeX/gridSizeZ)-0.22,gridSizeX/gridSizeZ,(gridSizeX/gridSizeZ)-0.22,p2YellowItems,11,4,1,4,3,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Slug.png","Slug",2,"Poison (-2 hp each round)",isColorSwitchSide)  
-  //customSpriteMonster(obj,"static/images/units/Dejarik_Pieces/Slug.png") => cool, not necessary
-					obj.getChildren()[0].rotation.z  =0.0 
-
- 	 obj=SquareInteractObj(-2.0 ,.5,2.0,(gridSizeX/gridSizeZ)-0.22,gridSizeX/gridSizeZ,(gridSizeX/gridSizeZ)-0.22,p2YellowItems,12,9,1,1,8,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Savrip.png","Savrip",-1,"",isColorSwitchSide)  
+  			obj=SquareInteractObj(0.0,.5,2.0,(gridSizeX/gridSizeZ)-0.22,(gridSizeX/gridSizeZ)-0.05,(gridSizeX/gridSizeZ)-0.22,p2YellowItems,11,4,1,4,3,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Slug.png","Slug",2,"Poison (-2 hp each round)",isColorSwitchSide)  
  					obj.getChildren()[0].rotation.z  =0.0 
 
- 	  	 obj=SquareInteractObj(-1.0,.5,2.0,(gridSizeX/gridSizeZ)-0.22,gridSizeX/gridSizeZ,(gridSizeX/gridSizeZ)-0.22,p2YellowItems,13,6,1,2,6,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Monnok.png","Monnok",3,"Encore (2 actions in a turn)",isColorSwitchSide)  
+ 	 obj=SquareInteractObj(-2.0 ,.5,2.0,(gridSizeX/gridSizeZ)-0.22,(gridSizeX/gridSizeZ)-0.05,(gridSizeX/gridSizeZ)-0.22,p2YellowItems,12,9,1,1,8,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Savrip.png","Savrip",-1,"",isColorSwitchSide)  
+ 					obj.getChildren()[0].rotation.z  =0.0 
+
+ 	  	 obj=SquareInteractObj(-1.0,.5,2.0,(gridSizeX/gridSizeZ)-0.22,(gridSizeX/gridSizeZ)-0.05,(gridSizeX/gridSizeZ)-0.22,p2YellowItems,13,6,1,2,6,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Monnok.png","Monnok",3,"Encore (2 actions in a turn)",isColorSwitchSide)  
   					obj.getChildren()[0].rotation.z  =0.0 
 
 
-  	  	 obj=SquareInteractObj(1.0,.5,-2.0,(gridSizeX/gridSizeZ)-0.22,gridSizeX/gridSizeZ,(gridSizeX/gridSizeZ)-0.22,p1BlueItems,14,4,1,3,2,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Molator.png","Molator",4,"Stun the opponent for 2 rounds.",isColorSwitchSide)  
+  	  	 obj=SquareInteractObj(1.0,.5,-2.0,(gridSizeX/gridSizeZ)-0.22,(gridSizeX/gridSizeZ)-0.05,(gridSizeX/gridSizeZ)-0.22,p1BlueItems,14,4,1,3,2,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Molator.png","Molator",4,"Stun the opponent for 2 rounds.",isColorSwitchSide)  
   					obj.getChildren()[0].rotation.z  =0.0 
 
-    	  	 player=SquareInteractObj(2.0,.5,-2.0,(gridSizeX/gridSizeZ)-0.22,gridSizeX/gridSizeZ,(gridSizeX/gridSizeZ)-0.22,p1BlueItems,15,8,4,1,4,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Houjix.png","Houjix",-1,"",isColorSwitchSide)  
+    	  	 player=SquareInteractObj(2.0,.5,-2.0,(gridSizeX/gridSizeZ)-0.22,(gridSizeX/gridSizeZ)-0.05,(gridSizeX/gridSizeZ)-0.22,p1BlueItems,15,8,4,1,4,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Houjix.png","Houjix",-1,"",isColorSwitchSide)  
  					player.getChildren()[0].rotation.z  =0.0 
 
-      	  	 obj=SquareInteractObj(-0.0,.5,-2.0,(gridSizeX/gridSizeZ)-0.22,gridSizeX/gridSizeZ,(gridSizeX/gridSizeZ)-0.22,p1BlueItems,16,8,2,1,4,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Strider.png","Strider",5,"Regen (+2 HP each round)",isColorSwitchSide)  
+      	  	 obj=SquareInteractObj(-0.0,.5,-2.0,(gridSizeX/gridSizeZ)-0.22,(gridSizeX/gridSizeZ)-0.05,(gridSizeX/gridSizeZ)-0.22,p1BlueItems,16,8,2,1,4,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Strider.png","Strider",5,"Regen (+2 HP each round)",isColorSwitchSide)  
  					obj.getChildren()[0].rotation.z  =0.0 
 
-        	  	 obj=SquareInteractObj(-1.0,.5,-2.0,(gridSizeX/gridSizeZ)-0.22,gridSizeX/gridSizeZ,(gridSizeX/gridSizeZ)-0.22,p1BlueItems,17,6,2,1,4,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Takonada.png","Takonada",3,"Encore (2 actions in a turn)",isColorSwitchSide)  
+        	  	 obj=SquareInteractObj(-1.0,.5,-2.0,(gridSizeX/gridSizeZ)-0.22,(gridSizeX/gridSizeZ)-0.05,(gridSizeX/gridSizeZ)-0.22,p1BlueItems,17,6,2,1,4,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Takonada.png","Takonada",3,"Encore (2 actions in a turn)",isColorSwitchSide)  
 					obj.getChildren()[0].rotation.z  =0.0 
 					
- 					  ground=GroundObj(5, 5, 5, "static/images/decor/Dejarik_Chess_Board_Transparent_BW.png",groundLevels); 
+ 					 GroundObj(5, 5, 5, "static/images/decor/Dejarik_Chess_Board_Transparent_BW.png",groundLevels); 
    
    	for (var f = 0; f < groundLevels; f++) {
  SphereBlockObj(3,0.5-f,3,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ) -0.2 ,false,0,0,0)
@@ -1339,7 +961,10 @@ isStandAllowedOnDamageField=false;
 }
 			}else{
 			
-			  ground=GroundObj(gridSizeX, gridSizeY, gridSizeZ, "static/images/decor/HoloGraph_Chess_Board_Transparent.png",groundLevels);
+			  borderY=groundLevels ;
+borderYTop=1.5;
+
+			  GroundObj(gridSizeX, gridSizeY, gridSizeZ, "static/images/decor/HoloGraph_Chess_Board_Transparent.png",groundLevels);
 
 			 			Resource(0,0,0);
 $("#lOnlyDamgeInfo").remove();
@@ -1400,11 +1025,229 @@ $("#lMoveAndDamgeInfo").html("&#x1F7E5; = move & damage");
 			
 			}
 			
+			var clearPositionsOtherSideForDiagonal=function(object)
+			{
+			
+				scene.meshes.forEach(function(g) {
+  												  if( g.name.indexOf("positionObj") >-1  ){
+													  
+  											{ console.log(object.position);
+											if((object.position.x <=-1 && g.position.x >= 1)&&( object.position.z >=1 || object.position.z <=-1  ) )
+											{
+											g.dispose();
+											}
+											else if((object.position.x >= 1 && g.position.x <= -1 )&&( object.position.z >=1 || object.position.z <=-1  ))
+											{
+											g.dispose();
+											}
+
+											  }
+											  }
+											  });
+			}
  			activePlayerMovementSet=function(activePlayer)
 			{
 			if(typeof activePlayer == "undefined" || isEndgame)
 			{return; }
-			  if((activePlayer.levelId ==1 && activePlayer.TeamId ==0)   )
+			
+			if(    isClassicChess     )//dejarik game inc; activePlayer.levelId >=10
+			{
+
+					if(activePlayer.ObjectGameName=="Rook" ){
+					
+					movementRightPawnUpwards3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+					movementLeftPawnUpwards3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+					movementRightPawnDownwards3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+					movementLeftPawnDownwards3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+
+					  				 movementUpPawn3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+					  				  movementDownPawnBackwards3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+					  				
+									movementDownPawn3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+					  				 movementUpPawnBackwards3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+									 
+									 movementStraightUpPawn3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+									 movementStraightDownPawn3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+
+
+					movementRightPawnUpwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+					movementLeftPawnUpwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+					movementRightPawnDownwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+					movementLeftPawnDownwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+
+					  				 movementUpPawn3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+					  				  movementDownPawnBackwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+					  				
+									movementDownPawn3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+					  				 movementUpPawnBackwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+									 
+									 movementStraightUpPawn3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+									 movementStraightDownPawn3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+
+					}
+					else 	if(activePlayer.ObjectGameName=="Bishop" ){
+									 movementLeftUpPawn3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+									 movementRightUpPawn3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+				 									 movementLeftDownPawn3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+				 									 movementRightDownPawn3D(activePlayer,activePlayer.MovementRange+1,false, false,false); 
+													 
+													 
+									  movementLeftUpPawnBackwards3D (activePlayer,activePlayer.MovementRange+1,false, false,false);
+									 movementRightUpPawnBackwards3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+				 									 movementLeftDownPawnBackwards3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+				 									 movementRightDownPawnBackwards3D(activePlayer,activePlayer.MovementRange+1,false, false,false); 
+
+
+									 movementLeftUpPawn3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+									 movementRightUpPawn3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+				 									 movementLeftDownPawn3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+				 									 movementRightDownPawn3D(activePlayer,activePlayer.DamageRange+1,true, false,false); 
+													 
+													 
+									  movementLeftUpPawnBackwards3D (activePlayer,activePlayer.DamageRange+1,true, false,false);
+									 movementRightUpPawnBackwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+				 									 movementLeftDownPawnBackwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+				 									 movementRightDownPawnBackwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false); 
+
+clearPositionsOtherSideForDiagonal(activePlayer)
+					}
+					else if(activePlayer.ObjectGameName=="Pawn"  ){
+					if(Who ==0){
+					  				 movementDownPawn3D(activePlayer,activePlayer.DamageRange+1,false, true, false);
+									 movementLeftUpPawn3D(activePlayer,activePlayer.DamageRange+1,true, true, false);
+									 movementRightUpPawn3D(activePlayer,activePlayer.DamageRange+1,true, true, false);
+									 }
+									 else if (Who==1){
+ 				 movementUpPawn3D(activePlayer,activePlayer.DamageRange+1,false, true, false);
+				 									 movementLeftDownPawn3D(activePlayer,activePlayer.DamageRange+1,true, true, false);
+				 									 movementRightDownPawn3D(activePlayer,activePlayer.DamageRange+1,true, true, false); 
+				 }
+ 
+					}
+					else if(  activePlayer.ObjectGameName=="King" ||  activePlayer.ObjectGameName=="Queen"){
+					  		 
+					movementRightPawnUpwards3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+					movementLeftPawnUpwards3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+					movementRightPawnDownwards3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+					movementLeftPawnDownwards3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+
+					  				 movementUpPawn3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+					  				  movementDownPawnBackwards3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+					  				
+									movementDownPawn3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+					  				 movementUpPawnBackwards3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+									 
+									 movementStraightUpPawn3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+									 movementStraightDownPawn3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+
+
+					movementRightPawnUpwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+					movementLeftPawnUpwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+					movementRightPawnDownwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+					movementLeftPawnDownwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+
+					  				 movementUpPawn3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+					  				  movementDownPawnBackwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+					  				
+									movementDownPawn3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+					  				 movementUpPawnBackwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+									 
+									 movementStraightUpPawn3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+									 movementStraightDownPawn3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
+
+
+
+var digMovementRange= activePlayer.MovementRange;
+var digDamageRange= activePlayer.DamageRange
+
+if(activePlayer.ObjectGameName=="Queen"){
+  digMovementRange= 5;
+  digDamageRange= 5;// more is not req. diagonally in this setting.
+
+
+}
+
+ movementLeftUpPawn3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
+									 movementRightUpPawn3D(activePlayer,digMovementRange+1,false, false,false);
+				 									 movementLeftDownPawn3D(activePlayer,digMovementRange+1,false, false,false);
+				 									 movementRightDownPawn3D(activePlayer,digMovementRange+1,false, false,false); 
+													 
+													 
+									  movementLeftUpPawnBackwards3D (activePlayer,digMovementRange+1,false, false,false);
+									 movementRightUpPawnBackwards3D(activePlayer,digMovementRange+1,false, false,false);
+				 									 movementLeftDownPawnBackwards3D(activePlayer,digMovementRange+1,false, false,false);
+				 									 movementRightDownPawnBackwards3D(activePlayer,digMovementRange+1,false, false,false); 
+
+
+									 movementLeftUpPawn3D(activePlayer,digDamageRange+1,true, false,false);
+									 movementRightUpPawn3D(activePlayer,digDamageRange+1,true, false,false);
+				 									 movementLeftDownPawn3D(activePlayer,digDamageRange+1,true, false,false);
+				 									 movementRightDownPawn3D(activePlayer,digDamageRange+1,true, false,false); 
+													 
+													 
+									  movementLeftUpPawnBackwards3D (activePlayer,digDamageRange+1,true, false,false);
+									 movementRightUpPawnBackwards3D(activePlayer,digDamageRange+1,true, false,false);
+				 									 movementLeftDownPawnBackwards3D(activePlayer,digDamageRange+1,true, false,false);
+				 									 movementRightDownPawnBackwards3D(activePlayer,digDamageRange+1,true, false,false); 
+clearPositionsOtherSideForDiagonal(activePlayer)
+					}
+					else if(activePlayer.ObjectGameName=="Knight"){
+								 				 movementKnightJumpRightUp(activePlayer ,true,true,false);
+			 				 movementKnightJumpRightDown(activePlayer ,true,true,false);
+			 				 movementKnightJumpLeftDown(activePlayer ,true,true,false);
+			 				 movementKnightJumpLeftUp(activePlayer ,true,true,false);
+							 
+							   movementKnightJumpRightUpBackwards(activePlayer ,true,true,false);
+			 				 movementKnightJumpRightDownBackwards(activePlayer ,true,true,false);
+			 				 movementKnightJumpLeftDownBackwards(activePlayer ,true,true,false);
+			 				 movementKnightJumpLeftUpBackwards(activePlayer ,true,true,false);
+
+
+								 				 movementKnightJumpRightUpXaxis(activePlayer ,true,true,false);
+			 				 movementKnightJumpRightDownXaxis(activePlayer ,true,true,false);
+			 				 movementKnightJumpLeftDownXaxis(activePlayer ,true,true,false);
+			 				 movementKnightJumpLeftUpXaxis(activePlayer ,true,true,false);
+							 
+							   movementKnightJumpRightUpBackwardsXaxis(activePlayer ,true,true,false);
+			 				 movementKnightJumpRightDownBackwardsXaxis(activePlayer ,true,true,false);
+			 				 movementKnightJumpLeftDownBackwardsXaxis(activePlayer ,true,true,false);
+			 				 movementKnightJumpLeftUpBackwardsXaxis(activePlayer ,true,true,false);
+
+					}
+					clearPositioningsObjectsBordersOnScene();
+					return;// req. voor p2
+
+			}  
+			
+			else if(  isSpaceChess        )//dejarik game inc; activePlayer.levelId >=10
+			{
+
+			  movementRight(activePlayer,activePlayer.MovementRange+1,false,true,true);
+
+ 				 movementLeft(activePlayer,activePlayer.MovementRange+1,false,true,true);
+				 movementRight(activePlayer,activePlayer.MovementRange+1,false,true,true);
+				  movementUp(activePlayer,activePlayer.MovementRange+1,false,true,true);
+  				 movementDown(activePlayer,activePlayer.MovementRange+1,false,true,true);
+
+				 movementRightUp(activePlayer,activePlayer.MovementRange+1,false,true,true);
+				 movementRightDown(activePlayer,activePlayer.MovementRange+1,false,true,true);
+				 movementLeftUp(activePlayer,activePlayer.MovementRange+1,false,true,true);
+				 movementLeftDown(activePlayer,activePlayer.MovementRange+1,false,true,true);
+
+ 
+ 				 movementRight(activePlayer,activePlayer.DamageRange+1,true,true,true);
+
+ 				 movementLeft(activePlayer,activePlayer.DamageRange+1,true,true,true);
+				 movementRight(activePlayer,activePlayer.DamageRange+1,true,true,true);
+				  movementUp(activePlayer,activePlayer.DamageRange+1,true,true,true);
+  				 movementDown(activePlayer,activePlayer.DamageRange+1,true,true,true);
+
+				 movementRightUp(activePlayer,activePlayer.DamageRange+1,true,true,true);
+				 movementRightDown(activePlayer,activePlayer.DamageRange+1,true,true,true);
+				 movementLeftUp(activePlayer,activePlayer.DamageRange+1,true,true,true);
+				 movementLeftDown(activePlayer,activePlayer.DamageRange+1,true,true,true);
+			}
+			 	else  if((activePlayer.levelId ==1 && activePlayer.TeamId ==0)   )
 			{
   				 movementDown(activePlayer,activePlayer.MovementRange+1,false,false,true);
 				 movementLeftUp(activePlayer,activePlayer.MovementRange+1,false,false,true);
@@ -1531,36 +1374,8 @@ $("#lMoveAndDamgeInfo").html("&#x1F7E5; = move & damage");
  				 movementUp(activePlayer,activePlayer.DamageRange+1,true,false,true); // fmi movementrange not true, otherwise collision object big
  	 
 			}
-				else  if(  isSpaceChess      )//dejarik game inc; activePlayer.levelId >=10
-			{
+				    
 
-				 movementRight(activePlayer,activePlayer.MovementRange+1,false,true,true);
-
- 				 movementLeft(activePlayer,activePlayer.MovementRange+1,false,true,true);
-				 movementRight(activePlayer,activePlayer.MovementRange+1,false,true,true);
-				  movementUp(activePlayer,activePlayer.MovementRange+1,false,true,true);
-  				 movementDown(activePlayer,activePlayer.MovementRange+1,false,true,true);
-
-				 movementRightUp(activePlayer,activePlayer.MovementRange+1,false,true,true);
-				 movementRightDown(activePlayer,activePlayer.MovementRange+1,false,true,true);
-				 movementLeftUp(activePlayer,activePlayer.MovementRange+1,false,true,true);
-				 movementLeftDown(activePlayer,activePlayer.MovementRange+1,false,true,true);
-
- 
- 				 movementRight(activePlayer,activePlayer.DamageRange+1,true,true,true);
-
- 				 movementLeft(activePlayer,activePlayer.DamageRange+1,true,true,true);
-				 movementRight(activePlayer,activePlayer.DamageRange+1,true,true,true);
-				  movementUp(activePlayer,activePlayer.DamageRange+1,true,true,true);
-  				 movementDown(activePlayer,activePlayer.DamageRange+1,true,true,true);
-
-				 movementRightUp(activePlayer,activePlayer.DamageRange+1,true,true,true);
-				 movementRightDown(activePlayer,activePlayer.DamageRange+1,true,true,true);
-				 movementLeftUp(activePlayer,activePlayer.DamageRange+1,true,true,true);
-				 movementLeftDown(activePlayer,activePlayer.DamageRange+1,true,true,true);
-
-
-			}
 			clearPositioningsObjectsBordersOnScene();
 			
  			}
@@ -1807,12 +1622,12 @@ return true;
 				   if((activePlayer.specialId==3)&& typeof activePlayer.encore === "undefined" )
 												{clearPositioningsObjectsOnScene();
 												activePlayer["encore"]=1;
-												 $("#info").append( activePlayer.ObjectGameName +" has 'encore', two move&attack actions allowed.<br>");
+												 $("#info").append( activePlayer.ObjectGameName +" has 'encore', two times move or attack allowed.<br>");
 
 												} else if(isAttackOrMoveAndAttack && typeof activePlayer.encore === "undefined"){	 activePlayer["encore"]=1;}
 												
 												
-				if(meshTouched.position.x <= borderX && meshTouched.position.x >=-borderX && meshTouched.position.z <= borderZ && meshTouched.position.z >= -borderZ){
+				if(meshTouched.position.y <= borderYTop && meshTouched.position.y >=-borderY && meshTouched.position.x <= borderX && meshTouched.position.x >=-borderX && meshTouched.position.z <= borderZ && meshTouched.position.z >= -borderZ){
 			
 			var isObjPresent=false;
 			scene.meshes.forEach(function(g) {
@@ -2055,7 +1870,7 @@ if(Who != pickResult.pickedMesh.TeamId && isTurnBased ){return; }
 
 					 var isNoSuddenDeathForP1 =true; 
 			 var isNoSuddenDeathForP2 =true; 
-if(!isSpaceChess &&turnCount >100 && !isEndgame && collTime >= 29) // end game after round 50 (100 turns), if possible
+if(!isSpaceChess && !isClassicChess &&turnCount >100 && !isEndgame && collTime >= 29) // end game after round 50 (100 turns), if possible
 			{
 				var ObjectsP1= scene.meshes.filter(function(obj) {
     return obj.TeamId ==0 && obj.name.indexOf("InteractionObj") >-1&& obj.levelId != "undefined"
@@ -2085,6 +1900,35 @@ if(ObjectsP1.length == 1 && ObjectsP2.length ==1 )
 
 		}
 }
+			}
+			else if( isClassicChess &&  !isEndgame && collTime >= 29)  
+			{
+				var ObjectsP1= scene.meshes.filter(function(obj) {
+    return obj.TeamId ==0 && obj.name.indexOf("InteractionObj") >-1&& obj.ObjectGameName== "King"
+});
+				var ObjectsP2= scene.meshes.filter(function(obj) {
+    return obj.TeamId ==1 && obj.name.indexOf("InteractionObj") >-1 && obj.ObjectGameName== "King"
+});
+ 
+		if(ObjectsP1.length  <1 &&ObjectsP2.length <1)
+		{
+					  isNoSuddenDeathForP1 =false; 
+			  isNoSuddenDeathForP2 =false; 
+
+		}
+		else if(ObjectsP1.length  <1 && ObjectsP2.length >0)
+		{
+					  isNoSuddenDeathForP1 =false; 
+			  isNoSuddenDeathForP2 =true; 
+
+		}
+		else if(ObjectsP1.length  >0 && ObjectsP2.length <1)
+
+		{
+					  isNoSuddenDeathForP1 =true; 
+			  isNoSuddenDeathForP2 =false; 
+
+ }
 			}
 
 			var isMostImportantPieceFoundWhoP1 =false; 
@@ -2147,9 +1991,12 @@ else{
 																if(aICount >= playerCount ||( aICount == 1 && Who ==1)){m.visibility = 0.0;}
 																else{ m.visibility = 0.25;  }
 
-												if(isInteractionMeshesUseSprites&&g.levelId>0){m.scaling=new BABYLON.Vector3(3.3,4.0,3.3);	 
+												if(isInteractionMeshesUseSprites&&g.levelId>0){m.scaling=new BABYLON.Vector3(3.4,4.1,3.4);	 
 												}else if(g.levelId>0){
 											m.scaling=new BABYLON.Vector3(4.0,4.1,4.0);  }
+											
+															  m.material.diffuseColor= new BABYLON.Color3(1.4, .4, .4);
+
 											  }
 											  }
 											   else if(m.name.indexOf("InteractionObj") >-1&&   g.name.indexOf("InteractionObj") >-1&& typeof activePlayer != "undefined" && activePlayer.TeamId != g.TeamId )
@@ -2215,7 +2062,7 @@ if(currentPlayerGivesUp){$("#info").append( "Player 1 gave up.<br><br>" );}
 		var Reset = function()
 		{
 					$("#divSelectedItem").text("");
-
+groundArray=[];
 					for (var i = 0; i < 10; i++) { //certainly removing all instances.
 scene.meshes.forEach(function(m) {
 if(m.name !=="skyBox" )// &&  m.name !=="ground")
@@ -2366,10 +2213,16 @@ playerCount = $("#txtPlayerCount").val();
 isInteractionMeshesUseSprites=!$("#chisInteractionMeshesUseSprites").prop("checked");
 
 groundLevels=$("#txtFloors").val();
- if(groundLevels <2){$(".floorButtons").hide();}
  
 isSpaceChess= $("#chSpaceChess").prop("checked");
 isColorSwitchSide=$("#chSwitchSides").prop("checked");
+
+
+   is3DChess=isClassicChess=$("#ch3DChess").prop("checked"); 
+   isWithNormalChessPieces=$("#ch3DChessClassicPieces").prop("checked"); 
+
+if(groundLevels <5 && is3DChess){groundLevels=5;}
+ if(groundLevels <2){$(".floorButtons").hide();}
 
 if(isSpaceChess){$("#divPass").show();$("#sTutorial").hide(); isInteractionMeshesUseSprites=false;}else{$("#sTutorialSpaceChess").hide();}
  
