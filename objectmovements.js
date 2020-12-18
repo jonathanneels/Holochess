@@ -40,7 +40,7 @@
 																for (var f = 0; f < groundLevels; f++) {
 
 				for (var i = 0; i < steps; i++) {
-				if( f > i){continue;}
+				if( f > steps){continue;}// old:  if( f > i){continue;}
 				var damage= positionObj(object.position.x+i,0.5-f,object.position.z );
 				if(!isCanJumpOverObstacles){
 				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
@@ -67,7 +67,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 													for (var f = 0; f < groundLevels; f++) {
 
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				 var damage=positionObj(object.position.x-i,0.5-f,object.position.z );
 				 if(!isCanJumpOverObstacles){
@@ -95,7 +95,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 										for (var f = 0; f < groundLevels; f++) {
 
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x,0.5-f,object.position.z+i );
 				 
@@ -125,7 +125,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 							for (var f = 0; f < groundLevels; f++) {
 
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x,0.5-f,object.position.z-i );
 				
@@ -158,7 +158,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			{
 			for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x-i,0.5-f,object.position.z-i );
 				if(!isCanJumpOverObstacles){
@@ -186,7 +186,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			{
 			for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x+i,0.5-f,object.position.z-i );
 				if(!isCanJumpOverObstacles){
@@ -215,7 +215,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			{
 				for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x+i,0.5-f,object.position.z+i );
 				if(!isCanJumpOverObstacles){
@@ -244,7 +244,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			{
 			for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x-i,0.5-f,object.position.z+i ); 
 				
@@ -278,7 +278,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 										for (var f = 0; f < groundLevels; f++) {
 
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x,object.position.y +   f ,object.position.z-i ); 
 				 
@@ -308,7 +308,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 										for (var f = 0; f < groundLevels; f++) {
 
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x,object.position.y +   f ,object.position.z+i ); 
 				 
@@ -339,7 +339,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 							for (var f = 0; f < groundLevels; f++) {
 
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x,object.position.y -   f ,object.position.z  );
 				
@@ -371,7 +371,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 							for (var f = 0; f < groundLevels; f++) {
 
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x,object.position.y +   f ,object.position.z  );
 				
@@ -405,7 +405,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 							for (var f = 0; f < groundLevels; f++) {
 
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x,object.position.y -   f ,object.position.z+i );
 				
@@ -437,7 +437,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 							for (var f = 0; f < groundLevels; f++) {
 
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x,object.position.y -   f ,object.position.z-i );
 				
@@ -471,7 +471,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 																for (var f = 0; f < groundLevels; f++) {
 
 				for (var i = 0; i < steps; i++) {
-				if( f > i){continue;}
+				if( f > steps){continue;}// old:  if( f > i){continue;}
 				var damage= positionObj(object.position.x+i,object.position.y +   f,object.position.z );
 				if(!isCanJumpOverObstacles){
 				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
@@ -498,7 +498,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 													for (var f = 0; f < groundLevels; f++) {
 
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				 var damage=positionObj(object.position.x-i,object.position.y +   f,object.position.z );
 				 if(!isCanJumpOverObstacles){
@@ -528,7 +528,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 																for (var f = 0; f < groundLevels; f++) {
 
 				for (var i = 0; i < steps; i++) {
-				if( f > i){continue;}
+				if( f > steps){continue;}// old:  if( f > i){continue;}
 				var damage= positionObj(object.position.x+i,object.position.y -   f,object.position.z );
 				if(!isCanJumpOverObstacles){
 				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
@@ -555,7 +555,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 													for (var f = 0; f < groundLevels; f++) {
 
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				 var damage=positionObj(object.position.x-i,object.position.y -   f,object.position.z );
 				 if(!isCanJumpOverObstacles){
@@ -582,9 +582,9 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			{
 			for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
- 				var damage= positionObj(object.position.x-i,object.position.y -   f,object.position.z-i );
+ 				var damage= positionObj(object.position.x-i,object.position.y +   f,object.position.z-i );
 				if(!isCanJumpOverObstacles){
 				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
  											  
@@ -610,9 +610,9 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			{
 			for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
- 				var damage= positionObj(object.position.x+i,object.position.y -   f,object.position.z-i );
+ 				var damage= positionObj(object.position.x+i,object.position.y +   f,object.position.z-i );
 				if(!isCanJumpOverObstacles){
 				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
  											  
@@ -639,7 +639,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			{
 				for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x+i,object.position.y -   f,object.position.z+i );
 				if(!isCanJumpOverObstacles){
@@ -668,7 +668,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			{
 			for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x-i,object.position.y -   f,object.position.z+i ); 
 				
@@ -700,9 +700,9 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			{
 			for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
- 				var damage= positionObj(object.position.x-i,object.position.y +   f,object.position.z-i );
+ 				var damage= positionObj(object.position.x-i,object.position.y-   f,object.position.z-i );
 				if(!isCanJumpOverObstacles){
 				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
  											  
@@ -728,9 +728,9 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			{
 			for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
- 				var damage= positionObj(object.position.x+i,object.position.y +   f,object.position.z-i );
+ 				var damage= positionObj(object.position.x+i,object.position.y -   f,object.position.z-i );
 				if(!isCanJumpOverObstacles){
 				if(isJumpOverBlockCheck(damage)){  damage.dispose(); break;
  											  
@@ -757,7 +757,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			{
 				for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x+i,object.position.y +   f,object.position.z+i );
 				if(!isCanJumpOverObstacles){
@@ -786,7 +786,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			{
 			for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x-i,object.position.y +   f,object.position.z+i ); 
 				
@@ -818,7 +818,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			{
 			for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x+i,object.position.y  ,object.position.z-i );
 				if(!isCanJumpOverObstacles){
@@ -847,7 +847,7 @@ var movementRightUpHorse3D= function (object, steps, isCanDoDamageOnField, isCan
 			{
 			for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x+i,object.position.y  ,object.position.z+i );
 				if(!isCanJumpOverObstacles){
@@ -876,7 +876,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			{
 			for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x-i,object.position.y  ,object.position.z-i );
 				if(!isCanJumpOverObstacles){
@@ -904,7 +904,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			{
 			for (var f = 0; f < groundLevels; f++) {
 				for (var i = 0; i < steps; i++) {
-								if( f > i){continue;}
+								if( f > steps){continue;}// old:  if( f > i){continue;}
 
  				var damage= positionObj(object.position.x-i,object.position.y  ,object.position.z-i );
 				if(!isCanJumpOverObstacles){
@@ -934,7 +934,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -955,7 +955,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -976,7 +976,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -997,7 +997,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -1025,7 +1025,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -1046,7 +1046,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -1067,7 +1067,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -1088,8 +1088,8 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
-								if( i !=2){continue;}
+if( f > i){continue;}
+if( i !=2){continue;}
 
  				 
 				 				var damage= positionObj(object.position.x+1 ,object.position.y -   f,object.position.z-(i ) ); 
@@ -1118,7 +1118,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -1139,7 +1139,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -1160,7 +1160,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -1181,7 +1181,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -1206,7 +1206,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -1227,7 +1227,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -1248,7 +1248,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -1269,7 +1269,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -1297,7 +1297,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -1318,7 +1318,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -1339,7 +1339,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 
@@ -1360,7 +1360,7 @@ damage["isStandAllowedOnDamageField"]= isStandAllowedOnDamageField
 			for (var f = 0; f < groundLevels; f++) {
 			
  				for (var i = 0; i < 3; i++) {
-								if( f > i){continue;}
+if( f > i){continue;}
 								if( i !=2){continue;}
 
  				 

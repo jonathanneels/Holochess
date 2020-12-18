@@ -634,6 +634,115 @@ Who= randomInteger(0,playerCount-1);	 //Random starter
 
 	}
 	}
+	
+	var TriDChessBlockFields=function()
+	{
+	
+	
+ 
+for (var i = -2; i < 5; i++) {
+ 
+ SphereBlockObj(4,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(3,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(2,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(1,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(0,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-4,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-3,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-2,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-1,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ 
+
+}
+
+ /*for (var g = 0; g< 1; g++) {
+
+for (var i = -4; i < 5; i++) {
+ 
+ SphereBlockObj(4,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(3,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(2,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(1,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(0,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-4,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-3,2+g,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-2,2+g +g,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-1,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ 
+}
+}*/
+
+for (var i = -4; i < 5; i++) {
+
+ SphereBlockObj(i,-1 ,-4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+  SphereBlockObj(i,-2 ,-4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+  SphereBlockObj(i,-3 ,-4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+
+    SphereBlockObj(i,-2 ,-3,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+
+}
+for (var i = -1; i < 2; i++) { /// 3 in betweens blue
+
+ SphereBlockObj(i,1 ,-4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ)*2 ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+  SphereBlockObj(i,1 ,-3,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ)*2 ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+
+}
+  
+
+  for (var i = -4; i < 3; i++) {
+ 
+ SphereBlockObj(4,-groundArray.length+1  ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(3,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(2,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(1,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(0,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-4,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-3,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-2,-groundArray.length+1,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ SphereBlockObj(-1,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ 
+ 
+}
+
+
+ 
+  for (var i = -4; i < 5; i++) {
+
+ SphereBlockObj(i,-groundArray.length+3 ,4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+  SphereBlockObj(i,-groundArray.length+4 ,4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+  SphereBlockObj(i,-groundArray.length+5 ,4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+
+  SphereBlockObj(i,-groundArray.length+4 ,3,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+
+} 
+
+ for (var i = -1; i <2; i++) { /// 3 in betweens yellow
+
+ SphereBlockObj(i,-groundArray.length+1   ,4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+  SphereBlockObj(i,-groundArray.length+1   ,3,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+
+} 
+
+//CENTER Parts:
+  for (var i = -1; i < 5; i++) {
+
+ SphereBlockObj(0,-1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ } 
+  for (var i = -2; i < 2; i++) { // center side blue
+
+ SphereBlockObj(0,-2 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+   SphereBlockObj(0, -groundArray.length+2,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4 ) ,false,0,0,1)
+
+ } 
+  for (var i = -1; i < 5; i++) { // side yellow
+
+ SphereBlockObj(0,0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
+ 
+ } 
+	
+	}
+	
+	
 			startObjects  = function()
 			{
 			
@@ -772,107 +881,7 @@ if(is3DChess){SquareInteractObj(3.0,groundArray[groundArray.length-1].position.y
 		 SquareInteractObj(2.0,.5,-3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,1 ,1,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)  
 if(is3DChess){SquareInteractObj(3.0,.5,-3.0,gridSizeX/gridSizeZ-0.2,(gridSizeX/gridSizeZ)-0.1,gridSizeX/gridSizeZ-0.2,p1BlueItems,1,1,1 ,1 ,5,isInteractionMeshesUseSprites,pawnImg,"Pawn",-1,"",isColorSwitchSide)}
 
-
- 
-for (var i = -2; i < 5; i++) {
- 
- SphereBlockObj(4,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(3,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(2,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(1,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(0,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(-4,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(-3,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(-2,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(-1,1.0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- 
-
-}
-
- /*for (var g = 0; g< 1; g++) {
-
-for (var i = -4; i < 5; i++) {
- 
- SphereBlockObj(4,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(3,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(2,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(1,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(0,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(-4,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(-3,2+g,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(-2,2+g +g,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(-1,2+g ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- 
-}
-}*/
-
-for (var i = -4; i < 5; i++) {
-
- SphereBlockObj(i,-1 ,-4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
-  SphereBlockObj(i,-2 ,-4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
-  SphereBlockObj(i,-3 ,-4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
-
-    SphereBlockObj(i,-2 ,-3,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
-
-}
-for (var i = -1; i < 2; i++) { /// 3 in betweens blue
-
- SphereBlockObj(i,1 ,-4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ)*2 ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
-  SphereBlockObj(i,1 ,-3,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ)*2 ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
-
-}
-  
-
-  for (var i = -4; i < 3; i++) {
- 
- SphereBlockObj(4,-groundArray.length+1  ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(3,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(2,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(1,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(0,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(-4,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(-3,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(-2,-groundArray.length+1,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- SphereBlockObj(-1,-groundArray.length+1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- 
- 
-}
-
-
- 
-  for (var i = -4; i < 5; i++) {
-
- SphereBlockObj(i,-groundArray.length+3 ,4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
-  SphereBlockObj(i,-groundArray.length+4 ,4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
-  SphereBlockObj(i,-groundArray.length+5 ,4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
-
-  SphereBlockObj(i,-groundArray.length+4 ,3,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
-
-} 
-
- for (var i = -1; i <2; i++) { /// 3 in betweens yellow
-
- SphereBlockObj(i,-groundArray.length+1   ,4,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
-  SphereBlockObj(i,-groundArray.length+1   ,3,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
-
-} 
-
-//CENTER Parts:
-  for (var i = -1; i < 5; i++) {
-
- SphereBlockObj(0,-1 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- } 
-  for (var i = -2; i < 2; i++) { // center side blue
-
- SphereBlockObj(0,-2 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
-   SphereBlockObj(0, -groundArray.length+2,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4 ) ,false,0,0,1)
-
- } 
-  for (var i = -1; i < 5; i++) { // side yellow
-
- SphereBlockObj(0,0 ,i,(gridSizeX/gridSizeZ/4),(gridSizeX/gridSizeZ) ,(gridSizeX/gridSizeZ/4) ,false,0,0,1)
- 
- } 
+//TriDChessBlockFields();
 
 				 	HideBlockObjectsOnScene();
 
@@ -1031,7 +1040,7 @@ $("#lMoveAndDamgeInfo").html("&#x1F7E5; = move & damage");
 				scene.meshes.forEach(function(g) {
   												  if( g.name.indexOf("positionObj") >-1  ){
 													  
-  											{ console.log(object.position);
+  											{  
 											if((object.position.x <=-1 && g.position.x >= 1)&&( object.position.z >=1 || object.position.z <=-1  ) )
 											{
 											g.dispose();
@@ -1043,6 +1052,284 @@ $("#lMoveAndDamgeInfo").html("&#x1F7E5; = move & damage");
 
 											  }
 											  }
+											  });
+			}
+				var clearPositionsOtherSideForCross=function(object) // form of bugfixing in combination of the quick&dirty 3D-controls (this one has children, wife & full-time job with too much ambitions ).
+			{
+									var feedToLower= scene.meshes.filter(function(obj) {
+    return obj.name.indexOf("InteractionObj") >-1 && obj.position.z == object.position.z +1 && obj.position.x == object.position.x //&& obj.position.y == object.position.y
+});
+									var feedToUpper= scene.meshes.filter(function(obj) {
+    return obj.name.indexOf("InteractionObj") >-1 && obj.position.z == object.position.z -1  && obj.position.x == object.position.x// && obj.position.y == object.position.y
+});
+
+ 
+				scene.meshes.forEach(function(g) {
+  												  if( g.name.indexOf("positionObj") >-1 &&activePlayer.position.z <=-3   ){
+												  
+												     if(feedToLower.length >0 && g.position.z >=-3 ){
+												  g.dispose();}
+  
+											  }
+											      if( g.name.indexOf("positionObj") >-1 &&activePlayer.position.z >=3   ){
+													 
+											   if(feedToUpper.length >0 && g.position.z <=3){
+												  g.dispose();}
+ 
+											  }
+											  
+											  
+											  
+											  if( g.name.indexOf("positionObj") >-1 &&activePlayer.position.z <3   ){
+												  
+												   if( g.position.z >=3  && g.position.y<-groundLevels+1 ){
+													g.dispose();
+													}
+												    
+  
+											  }
+											      if( g.name.indexOf("positionObj") >-1 &&activePlayer.position.z >-3   ){
+												  
+													if( g.position.z <=-3  && g.position.y>=0){
+													g.dispose();
+													}
+												  
+ 
+											  }
+											  
+											  
+											 
+
+											  });
+			}
+			
+				var clearPositionsGeneral=function(object)   
+			{
+			
+			
+												var feedToLower= scene.meshes.filter(function(obj) {
+    return obj.TeamId == Who && obj.name.indexOf("InteractionObj") >-1 && obj.position.z == object.position.z +1 && obj.position.x == object.position.x  && Math.ceil(obj.position.y) ==  Math.ceil(object.position.y)
+});
+									var feedToUpper= scene.meshes.filter(function(obj) {
+    return obj.TeamId == Who &&  obj.name.indexOf("InteractionObj") >-1 && obj.position.z == object.position.z -1  && obj.position.x == object.position.x && Math.floor(obj.position.y )== Math.floor(object.position.y)
+});
+
+
+ 												var feedToLowerDiagPlus= scene.meshes.filter(function(obj) {
+    return obj.TeamId == Who && obj.name.indexOf("InteractionObj") >-1 && obj.position.z == object.position.z +1 && obj.position.x == object.position.x+1  && Math.ceil(obj.position.y) ==  Math.ceil(object.position.y)
+});
+									var feedToUpperDiagPlus= scene.meshes.filter(function(obj) {
+    return obj.TeamId == Who &&  obj.name.indexOf("InteractionObj") >-1 && obj.position.z == object.position.z -1  && obj.position.x == object.position.x+1 && Math.floor(obj.position.y )== Math.floor(object.position.y)
+});
+
+										var feedToLowerDiagMin= scene.meshes.filter(function(obj) {
+    return obj.TeamId == Who && obj.name.indexOf("InteractionObj") >-1 && obj.position.z == object.position.z +1 && obj.position.x == object.position.x-1  && Math.ceil(obj.position.y) ==  Math.ceil(object.position.y)
+});
+									var feedToUpperDiagMin= scene.meshes.filter(function(obj) {
+    return obj.TeamId == Who &&  obj.name.indexOf("InteractionObj") >-1 && obj.position.z == object.position.z -1  && obj.position.x == object.position.x-1 && Math.floor(obj.position.y )== Math.floor(object.position.y)
+});
+											 
+ 
+	 
+									var feedpositionObjects= scene.meshes.filter(function(obj) {
+    return obj.name.indexOf("positionObj") >-1  
+});
+
+ 
+				feedpositionObjects.forEach(function(g) {
+  				
+				if( ( object.ObjectGameName==="Bishop" ||object.ObjectGameName==="Pawn")&& g.position.x == object.position.x&& g.position.z == object.position.z&& Math.floor( g.position.y) !=Math.floor(object.position.y ) )
+				{
+					  	g.dispose();
+
+				}
+				//////////////////plate shifts/////////////////
+				if(object.ObjectGameName!=="Knight"   &&  object.position.z ==-4 && g.position.y <-1){
+															g.dispose();
+
+				}
+				else if(object.ObjectGameName!=="Knight"   && object.position.z == 4 && g.position.y >-groundLevels+3){
+															g.dispose();
+
+				}
+				
+				if(object.ObjectGameName!=="Knight"   && object.position.z ==-3  && g.position.y <-1){//&& g.position.y <-2){
+															g.dispose();
+
+				}
+				else if(object.ObjectGameName!=="Knight"   && object.position.z == 3 && g.position.y >-groundLevels+3){//&& g.position.y >-groundLevels+4){
+															g.dispose();
+
+				}
+				/////////////////////////////////////////////////////////////
+
+				// other side in center
+				if(object.ObjectGameName!=="Knight"  ){
+			 	if(  ((object.position.z >= 2 && object.position.z < 4 && Math.ceil(object.position.y)==-groundLevels+3)|| (object.position.z <= -2&& object.position.z > -4&& Math.floor(object.position.y)==-1))){
+				 
+					if( (object.position.x <=0 && g.position.x >= 0)&&( object.position.z >=0 || object.position.z <=0  ) && Math.ceil(g.position.y) != Math.ceil(object.position.y) )
+											{
+											g.dispose();
+											}
+											else if((object.position.x >= 0 && g.position.x <= 0 )&&( object.position.z >=0 || object.position.z <=0  ) && Math.floor(g.position.y) != Math.floor(object.position.y)) 
+											{
+											g.dispose();
+											}
+                                if( (object.ObjectGameName==="Bishop"   || object.ObjectGameName==="Queen"   ) )
+											{
+											if(((object.position.x <-1    && g.position.x >=  0 ) ||(object.position.x >  1   && g.position.x <=  0 ) )){
+											g.dispose();} 
+											else if(object.position.x ==0 && g.position.x ==  0 && (( object.position.z <1    && g.position.z >1) || ( object.position.z >1    && g.position.z <1))){ g.dispose();} // maybe non-quick fix later (somewhat off..)
+											}
+				
+				}else{
+	if(  (object.position.x <=0 && g.position.x >= 0)&&( object.position.z >=0 || object.position.z <=0  ) )
+											{
+											g.dispose();
+											}
+											else if((g.position.y!=-groundLevels+3 ||g.position.y !=-1 ) &&  (object.position.x >= 0 && g.position.x <= 0 )&&( object.position.z >=0 || object.position.z <=0  ))
+											{
+											g.dispose();
+											} 		
+}											 } 
+else{//Knight@hole location
+
+if((g.position.y!=-groundLevels+3   ) &&  g.position.x==0  )
+											{
+											g.dispose();
+											} 
+else if(( g.position.y !=-1 ) &&  g.position.x==0 )
+											{
+											g.dispose();
+											} 											
+}
+											  ////
+											  	  // highest other side
+/*
+											  	if((object.position.z <-3 && g.position.z > -3)  ||  (object.position.z <-2 && g.position.z > -2) ){
+													g.dispose();
+													}
+													if((object.position.z >3 && g.position.z < 3 ) || (object.position.z >2 && g.position.z < 2 ) ){
+													g.dispose();
+													}
+													
+													
+												  
+											//  if(  object.position.z <3   ){
+												 
+												   if(object.position.z <3 && g.position.z >=3  && g.position.y<-groundLevels+2 ){
+													g.dispose();
+													}
+												    
+  
+											//  }
+											    else // if(  object.position.z >-3   ){
+												  
+													if( object.position.z >-3 &&g.position.z <=-3  && g.position.y>=0){
+													g.dispose();
+													//}
+												  
+ 
+											  } 
+											   */
+											  ////
+											  
+										/////// check one in front (high-low layers) ////
+										
+ 													  
+												     if( object.position.z < 3 &&feedToLower.length >0 && g.position.x ==object.position.x && g.position.z >=object.position.z && Math.ceil(g.position.y )<= Math.ceil(object.position.y) ){
+												  g.dispose();}
+  
+ 													 
+											   if(object.position.z >-3 &&feedToUpper.length >0 && g.position.x ==object.position.x && g.position.z <=object.position.z  && Math.floor(g.position.y )>= Math.floor(object.position.y)){
+												  g.dispose();}
+ 
+											    
+										
+										
+										///		
+										/////// check one in front diagonal (high-low layers) ////
+										
+ 													  
+												     if((object.ObjectGameName==="Queen" || object.ObjectGameName==="Bishop" )&& (object.position.z < 3 &&feedToLowerDiagPlus.length >0 && g.position.x >=object.position.x+1 && g.position.z >=object.position.z && Math.ceil(g.position.y )<= Math.ceil(object.position.y)) ){
+												  g.dispose();}
+  
+ 													 
+											 else  if((object.ObjectGameName==="Queen" || object.ObjectGameName==="Bishop" )&&( object.position.z >-3 &&feedToUpperDiagPlus.length >0 && g.position.x >=object.position.x +1 && g.position.z <=object.position.z  && Math.floor(g.position.y )>= Math.floor(object.position.y))){
+												  g.dispose();}
+ 
+									     if((object.ObjectGameName==="Queen" || object.ObjectGameName==="Bishop" )&&  (object.position.z < 3 &&feedToLowerDiagMin.length >0 && g.position.x <=object.position.x-1 && g.position.z >=object.position.z && Math.ceil(g.position.y )<= Math.ceil(object.position.y)) ){
+												  g.dispose();}
+  
+ 													 
+											else   if((object.ObjectGameName==="Queen" || object.ObjectGameName==="Bishop" )&& ( object.position.z >-3 &&feedToUpperDiagMin.length >0 && g.position.x <=object.position.x-1 && g.position.z <=object.position.z  && Math.floor(g.position.y )>= Math.floor(object.position.y))){
+												  g.dispose();}
+
+										
+										
+										///
+										
+										
+										/////// check sub one highest floor ////
+											 /*  if( object.position.z <= -3 &&g.position.z >=-2   &&  Math.floor(object.position.y) == 0 &&  Math.floor(g.position.y) != 0){
+												  g.dispose();
+												  }
+												    if( object.position.z >=  3 &&g.position.z    <=2  &&  Math.floor(object.position.y) == -groundLevels+2 &&  Math.floor(g.position.y) != -groundLevels+1){
+												  g.dispose();
+												  }
+*/
+											 	///		
+
+										
+										// blue side backend///
+										if(  g.position.z <=-4 && g.position.y<0    ){
+												  
+ 													g.dispose();
+													 }
+ 										else if(  g.position.z == -3 && g.position.y<=-1   ){
+												  
+ 													g.dispose();
+													 }		
+										 else if(  g.position.z >  -3 && g.position.y>=0   ){
+												  
+ 													g.dispose();
+													 }	
+
+											if((  g.position.z <= -4 || (g.position.z <= -3 && g.position.y>=0)) && (g.position.x==0 || g.position.x==-1  || g.position.x==1    )){
+												  
+ 													g.dispose();
+													 }		 
+												///	 
+
+										// yellow side backend///
+										if(  g.position.z >= 4 && g.position.y>=-groundLevels+2    ){
+												  
+ 													g.dispose();
+													 }
+										else if(  g.position.z == 3 && g.position.y>=-groundLevels+3    ){
+												  
+ 													g.dispose();
+													 }	
+										 else if(  g.position.z <   3 && g.position.y<=-groundLevels+2   ){
+												  
+ 													g.dispose();
+													 }				 
+ 
+											  
+											if(  (g.position.z >= 4 || (g.position.z >= 3 && g.position.y<=-groundLevels+2)  ) && (g.position.x==0 || g.position.x==-1  || g.position.x==1    )){
+												  
+ 													g.dispose();
+													 }	  
+											  
+											  ///
+											  
+										// absolute center////
+										if(  (g.position.z == 0 && g.position.x==0)|| (g.position.z == -1 && g.position.x==0)  || (g.position.z == 1 && g.position.x==0) ){
+												  
+ 												 	g.dispose();
+													 }
+													 
+											///		 
 											  });
 			}
  			activePlayerMovementSet=function(activePlayer)
@@ -1084,6 +1371,7 @@ $("#lMoveAndDamgeInfo").html("&#x1F7E5; = move & damage");
 									 movementStraightUpPawn3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
 									 movementStraightDownPawn3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
 
+//clearPositionsOtherSideForCross(activePlayer)
 					}
 					else 	if(activePlayer.ObjectGameName=="Bishop" ){
 									 movementLeftUpPawn3D(activePlayer,activePlayer.MovementRange+1,false, false,false);
@@ -1109,7 +1397,7 @@ $("#lMoveAndDamgeInfo").html("&#x1F7E5; = move & damage");
 				 									 movementLeftDownPawnBackwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false);
 				 									 movementRightDownPawnBackwards3D(activePlayer,activePlayer.DamageRange+1,true, false,false); 
 
-clearPositionsOtherSideForDiagonal(activePlayer)
+//clearPositionsOtherSideForDiagonal(activePlayer)
 					}
 					else if(activePlayer.ObjectGameName=="Pawn"  ){
 					if(Who ==0){
@@ -1189,7 +1477,9 @@ if(activePlayer.ObjectGameName=="Queen"){
 									 movementRightUpPawnBackwards3D(activePlayer,digDamageRange+1,true, false,false);
 				 									 movementLeftDownPawnBackwards3D(activePlayer,digDamageRange+1,true, false,false);
 				 									 movementRightDownPawnBackwards3D(activePlayer,digDamageRange+1,true, false,false); 
-clearPositionsOtherSideForDiagonal(activePlayer)
+//clearPositionsOtherSideForDiagonal(activePlayer)
+//clearPositionsOtherSideForCross(activePlayer)
+
 					}
 					else if(activePlayer.ObjectGameName=="Knight"){
 								 				 movementKnightJumpRightUp(activePlayer ,true,true,false);
@@ -1214,6 +1504,9 @@ clearPositionsOtherSideForDiagonal(activePlayer)
 			 				 movementKnightJumpLeftUpBackwardsXaxis(activePlayer ,true,true,false);
 
 					}
+					
+					
+					clearPositionsGeneral(activePlayer);
 					clearPositioningsObjectsBordersOnScene();
 					return;// req. voor p2
 
