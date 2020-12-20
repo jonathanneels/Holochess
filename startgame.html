@@ -222,7 +222,7 @@ a:active {
    	<p id="pGold" style="position"  >
 	<div class="InlineButtons floorButtons" id="divLevelUp" onclick=""   ><p>  &#x25B2;</p> </div>
 		<div class="InlineButtons floorButtons" id="divLevelDown" onclick=""   ><p>   &#x25BC;</p> </div>
-		<div class="InlineButtons floorButtons" id="divLevelShift" onclick=""   ><p>&#x21bb;</p> </div><br><br><br>
+		<div class="InlineButtons floorButtons" id="divLevelShift" onclick=""   ><p>&#x1F441;</p> </div><br><br><br>
 
 	<div class="InlineButtons" id="divPass" onclick=""   ><p> PASS</p> </div><br><br><br><div class="InlineButtons" id="divGiveUp" onclick="currentPlayerGivesUp=true;"   ><p> FORFEIT</p> </div> <br><br>    <br><label id="lOnlyDamgeInfo">&#x1F7E5; = only damage </label><br><label id="lMoveAndDamgeInfo">&#x1F7E8; = move & damage</label> <br> &#x1F7E9; = only move </p>
        
@@ -414,6 +414,9 @@ var isColorSwitchSide=false;
         var sceneToRender = null;
         var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); };
         
+		 var confirmMove  ;
+var confirmTaken ;
+
 				var isNextKeyInputAllowed = true;
 var activePlayer;
 var isStandAndHit= true;
@@ -1138,11 +1141,18 @@ $("#lMoveAndDamgeInfo").html("&#x1F7E5; = move & damage");
  
 				feedpositionObjects.forEach(function(g) {
   				
+				// personal object rules
 				if( ( object.ObjectGameName==="Bishop" ||object.ObjectGameName==="Pawn")&& g.position.x == object.position.x&& g.position.z == object.position.z&& Math.floor( g.position.y) !=Math.floor(object.position.y ) )
 				{
 					  	g.dispose();
 
 				}
+				
+				if((object.ObjectGameName==="Bishop"   || object.ObjectGameName==="Queen"   ) &&(object.position.x== 2 || object.position.x ==-2) && (object.position.z== 4 ||  object.position.z==-4  ) && (g.position.z== 3 ||  g.position.z==-3  ) && ( g.position.x <2 && g.position.x >-2)){  
+														g.dispose();}
+														
+				//////////////////////////
+				
 				//////////////////plate shifts/////////////////
 				if(object.ObjectGameName!=="Knight"   &&  object.position.z ==-4 && g.position.y <-1){
 															g.dispose();
@@ -1164,8 +1174,10 @@ $("#lMoveAndDamgeInfo").html("&#x1F7E5; = move & damage");
 				/////////////////////////////////////////////////////////////
 
 				// other side in center
-				if(object.ObjectGameName!=="Knight"  ){
-			 	if(  ((object.position.z >= 2 && object.position.z < 4 && Math.ceil(object.position.y)==-groundLevels+3)|| (object.position.z <= -2&& object.position.z > -4&& Math.floor(object.position.y)==-1))){
+				if(object.ObjectGameName!=="Knight" &&  object.ObjectGameName!=="Pawn"){
+				
+				  			 	if(  ((object.position.z >= 2 && object.position.z < 4 && Math.ceil(object.position.y)==-groundLevels+3)|| (object.position.z <= -2&& object.position.z > -4&& Math.floor(object.position.y)==-1))){ 
+				 
 				 
 					if( (object.position.x <=0 && g.position.x >= 0)&&( object.position.z >=0 || object.position.z <=0  ) && Math.ceil(g.position.y) != Math.ceil(object.position.y) )
 											{
@@ -1177,7 +1189,15 @@ $("#lMoveAndDamgeInfo").html("&#x1F7E5; = move & damage");
 											}
                                 if( (object.ObjectGameName==="Bishop"   || object.ObjectGameName==="Queen"   ) )
 											{
-											if(((object.position.x <-1    && g.position.x >=  0 ) ||(object.position.x >  1   && g.position.x <=  0 ) )){
+ 											  if( ((object.position.x== 1 &&object.position.z == 2 && g.position.x <0&& g.position.z <2) || (object.position.x== -1 &&object.position.z == -2 && g.position.x >0 && g.position.z >-2)) ){g.dispose();}
+											else if( ((object.position.x== -1 &&object.position.z ==  2 && g.position.x >0 && g.position.z <2) || (object.position.x==  1 &&object.position.z == -2 && g.position.x <0 && g.position.z >-2)) ){g.dispose();}
+
+											/*if(  (object.position.x== 1 && object.position.z == 2   && g.position.x <  0)|| (object.position.x == -1 && object.position.z ==-2  && g.position.x >  0 ) || (object.position.x ==  1 && object.position.z == -2 && g.position.x <  0 ) || (object.position.x ==  -1 && object.position.z == -2   && g.position.x >  0 )   )
+											{	 			g.dispose();} 
+											
+											else  */
+											
+											if(((object.position.x <-1    && g.position.x >   0 ) ||(object.position.x >  1   && g.position.x <   0 ) )){
 											g.dispose();} 
 											else if(object.position.x ==0 && g.position.x ==  0 && (( object.position.z <1    && g.position.z >1) || ( object.position.z >1    && g.position.z <1))){ g.dispose();} // maybe non-quick fix later (somewhat off..)
 											}
@@ -1192,7 +1212,7 @@ $("#lMoveAndDamgeInfo").html("&#x1F7E5; = move & damage");
 											g.dispose();
 											} 		
 }											 } 
-else{//Knight@hole location
+else if(object.ObjectGameName==="Knight"){ 
 
 if((g.position.y!=-groundLevels+3   ) &&  g.position.x==0  )
 											{
@@ -1251,18 +1271,18 @@ else if(( g.position.y !=-1 ) &&  g.position.x==0 )
 										/////// check one in front diagonal (high-low layers) ////
 										
  													  
-												     if((object.ObjectGameName==="Queen" || object.ObjectGameName==="Bishop" )&& (object.position.z < 3 &&feedToLowerDiagPlus.length >0 && g.position.x >=object.position.x+1 && g.position.z >=object.position.z && Math.ceil(g.position.y )<= Math.ceil(object.position.y)) ){
+												     if((object.ObjectGameName==="Queen" || object.ObjectGameName==="Bishop" )&& object.position.z < 3 &&(feedToLowerDiagPlus.length >0 && g.position.x >=object.position.x+1 && g.position.z >object.position.z && Math.ceil(g.position.y )<= Math.ceil(object.position.y)) ){
 												  g.dispose();}
   
  													 
-											 else  if((object.ObjectGameName==="Queen" || object.ObjectGameName==="Bishop" )&&( object.position.z >-3 &&feedToUpperDiagPlus.length >0 && g.position.x >=object.position.x +1 && g.position.z <=object.position.z  && Math.floor(g.position.y )>= Math.floor(object.position.y))){
+											 else  if((object.ObjectGameName==="Queen" || object.ObjectGameName==="Bishop" )&& object.position.z >-3 &&( feedToUpperDiagPlus.length >0 && g.position.x >=object.position.x +1 && g.position.z <object.position.z  && Math.floor(g.position.y )>= Math.floor(object.position.y))){
 												  g.dispose();}
  
-									     if((object.ObjectGameName==="Queen" || object.ObjectGameName==="Bishop" )&&  (object.position.z < 3 &&feedToLowerDiagMin.length >0 && g.position.x <=object.position.x-1 && g.position.z >=object.position.z && Math.ceil(g.position.y )<= Math.ceil(object.position.y)) ){
+									     if((object.ObjectGameName==="Queen" || object.ObjectGameName==="Bishop" )&& object.position.z < 3 && (feedToLowerDiagMin.length >0 && g.position.x <=object.position.x-1 && g.position.z >object.position.z && Math.ceil(g.position.y )<= Math.ceil(object.position.y)) ){
 												  g.dispose();}
   
  													 
-											else   if((object.ObjectGameName==="Queen" || object.ObjectGameName==="Bishop" )&& ( object.position.z >-3 &&feedToUpperDiagMin.length >0 && g.position.x <=object.position.x-1 && g.position.z <=object.position.z  && Math.floor(g.position.y )>= Math.floor(object.position.y))){
+											else   if((object.ObjectGameName==="Queen" || object.ObjectGameName==="Bishop" )&& object.position.z >-3 &&( feedToUpperDiagMin.length >0 && g.position.x <=object.position.x-1 && g.position.z <object.position.z  && Math.floor(g.position.y )>= Math.floor(object.position.y))){
 												  g.dispose();}
 
 										
@@ -1692,6 +1712,8 @@ if(activePlayer.ObjectGameName=="Queen"){
 			 
 			$("#divSelectedItem").text("Player " + (Who+1).toString()+ "'s turn. Round: "+ Math.ceil(parseInt(turnCount/2)).toString()); 
 						$("#info").append($("#divSelectedItem").text()+"<br>");
+						
+						confirmMove.play();
 						}
 						
 			else{
@@ -1716,7 +1738,9 @@ if(typeof f.encore !== "undefined")
  						 $("#info").append( f.ObjectGameName +" is poisoned (-2 health).<br>");
 																						  if (f.Health <1){
 											  $("#info").append( f.ObjectGameName +" has been defeated.<br>");
-													f.dispose();}
+													f.dispose(); confirmTaken.play();
+													
+													}
 													}
 					if(typeof f.stunned !== "undefined")
 												{
@@ -1842,7 +1866,7 @@ return true;
 												else if(g.levelId ==1){
 											 	$("#info").append(g.ObjectGameName+" has been defeated<br>");
 
-												g.dispose();
+												g.dispose(); confirmTaken.play();
 												}
 											}
 											else{
@@ -1877,7 +1901,7 @@ return true;
 											  g.Health -=activePlayer.dps;
 											  if (g.Health <1){
 											  $("#info").append( g.ObjectGameName +" has been defeated.<br>");
-													g.dispose();}
+													g.dispose(); confirmTaken.play();}
 													else{ 
 												if(activePlayer.specialId ==2)
 												{
@@ -1954,7 +1978,7 @@ delete activePlayer['encore']; }else{
 			activePlayer.position.x  = meshTouched.position.x ; 		
   			activePlayer.position.z  = meshTouched.position.z ;
 			  			activePlayer.position.y  = meshTouched.position.y  ;
-
+if( isSpaceChess){confirmMove.play();}
  			 
  			/*if(isAttackOrMoveAndAttack && typeof activePlayer.encore !== "undefined"){ clearNonTargetsPositioningsObjectsOnScene(); } 
 			else{*/
@@ -2300,7 +2324,7 @@ else{
 											  if(isInteractionMeshesUseSprites  && g.getChildren().length>0){
 													g.getChildren()[0].dispose();
 													}
-													g.dispose();
+													g.dispose(); confirmTaken.play();
 													
 											  }
   
@@ -2577,6 +2601,10 @@ console.log(admincode)
 $("#txtJoinGame").val(admincode);
  //launchGuestMultiplayer();
 }
+
+   confirmMove =  new BABYLON.Sound("confirmMove", "static/sounds/confirm.wav", scene, null, { loop: false, autoplay: false,   spatialSound: false  });
+  confirmTaken = new BABYLON.Sound("confirmTaken", "static/sounds/piece_taken.wav", scene, null, { loop: false, autoplay: false,   spatialSound: false  });
+
       });
 	  
 	  
