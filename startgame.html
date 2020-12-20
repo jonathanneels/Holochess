@@ -766,7 +766,7 @@ isInteractionMeshesUseSprites=true;
   isStandAllowedOnDamageField=false;
 
 
-mm.position.y -=8;
+mm.position.y  =5;
 			//  ground=GroundObj(8,8,10, "static/images/decor/chessboards/10x8ChessBoard.png",groundLevels);
 			   GroundObj(9,9,9, "static/images/decor/chessboards/Beyond_Chess/9x9ChessBoardBeyond.png",groundLevels);
 			  
@@ -790,12 +790,14 @@ mm.position.y -=8;
 		   groundArray[1].visibility  = 0.3;
  					      groundArray[1].material.diffuseTexture.hasAlpha = true;     
 			groundArray[1].material.useAlphaFromDiffuseTexture = true;
+  groundArray[1].isPickable=false;
 
 			   groundArray[groundArray.length-2].material.diffuseTexture = new BABYLON.Texture("static/images/decor/chessboards/Beyond_Chess/9x9ChessBoardBeyondChessMiddleBottom.png", scene);
 		   groundArray[groundArray.length-2].material.diffuseTexture.hasAlpha  = true;
 		   groundArray[groundArray.length-2].visibility  = 0.3;
  					      groundArray[groundArray.length-2].material.diffuseTexture.hasAlpha = true;     
 			groundArray[groundArray.length-2].material.useAlphaFromDiffuseTexture = true;
+  groundArray[groundArray.length-2].isPickable=false;
 
 
 			   groundArray[Math.floor(groundArray.length/2)].material.diffuseTexture = new BABYLON.Texture("static/images/decor/chessboards/Beyond_Chess/9x9ChessBoardBeyondChessCenter.png", scene);
