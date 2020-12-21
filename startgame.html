@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8,width=device-width,initial-scale=0.8  ,user-scalable=no" />
 <link rel="icon" type="image/png" href="static/logo.ico"/>
 
         <title>HoloGraph Chess</title>
@@ -78,7 +78,7 @@
 			.infoImg{width:120px;float:right; padding-right:5px;}
 
 #divSelectedItem{text-align:right;}
-
+.infoImg{padding-left:2px;}
 
 
 
@@ -175,9 +175,25 @@ a:active {
   text-decoration: underline;
 }
 
+
+ .noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+ 
+}
+#renderCanvas { /*REF:https://forum.babylonjs.com/t/remove-border-of-rendering-canvas/16074*/
+  outline: none;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0); /* mobile webkit */
+}
+
          </style>
     </head>
-<body id="body">
+<body id="body" class="noselect">
     <div class="settings">
         <div class="setting" id="divSettingA"  ><p> RESTART</p>
         </div>
@@ -220,9 +236,9 @@ a:active {
 	
 	<div style="position: absolute; bottom: 0; padding:5px;  border: 0;" id="divGoldCount"> 
    	<p id="pGold" style="position"  >
-	<div class="InlineButtons floorButtons" id="divLevelUp" onclick=""   ><p>  &#x25B2;</p> </div>
-		<div class="InlineButtons floorButtons" id="divLevelDown" onclick=""   ><p>   &#x25BC;</p> </div>
-		<div class="InlineButtons floorButtons" id="divLevelShift" onclick=""   ><p>&#x1F441;</p> </div><br><br><br>
+	<div hidden class="InlineButtons" id="divLevelUp" onclick=""   ><p>  &#x25B2;</p> </div><br>
+		<div  hidden class="InlineButtons" id="divLevelDown" onclick=""   ><p>   &#x25BC;</p> </div><br>
+		<div class="InlineButtons floorButtons" id="divLevelShift" onclick=""   ><p>&#x1F441;</p> </div><br> 
 
 	<div class="InlineButtons" id="divPass" onclick=""   ><p> PASS</p> </div><br><br><br><div class="InlineButtons" id="divGiveUp" onclick="currentPlayerGivesUp=true;"   ><p> FORFEIT</p> </div> <br><br>    <br><label id="lOnlyDamgeInfo">&#x1F7E5; = only damage </label><br><label id="lMoveAndDamgeInfo">&#x1F7E8; = move & damage</label> <br> &#x1F7E9; = only move </p>
        
@@ -534,6 +550,9 @@ if(   m.name.indexOf("SphereBlockObj") >-1 )
             // toggleEditor();
         
             var camera = new BABYLON.ArcRotateCamera("camera1", -Math.PI/2, 1.1, 15, new BABYLON.Vector3(0, 0, 0), scene);
+			camera.useFramingBehavior = true;
+	camera.framingBehavior.elevationReturnWaitTime=2;
+		camera.framingBehavior.elevationReturnTime=100;
             camera.attachControl(canvas, true);
         ////////////////////////////////// Minimap////////////////////////////////////////////////
    if(isWithMinimap){
@@ -2070,6 +2089,19 @@ return true;
 	}
 	else{ $("#divSelectedItem").html("<img  class='infoImg'   src='static/images/units/v_"+pickResult.pickedMesh.levelId+".png' alt='infoImage'><br>Attack distance: "+pickResult.pickedMesh.DamageRange+"<br>Move distance: "+pickResult.pickedMesh.MovementRange +"<br>Damage: "+pickResult.pickedMesh.dps+"<br>Lives: "+pickResult.pickedMesh.Health+"<br>");		
 		}
+		
+		
+		if(isMobile())
+		{
+		var divsel = document.getElementById( 'divSelectedItem' );
+divsel.style.fontSize = "80%" ;
+
+ var imgdivsel= document.getElementsByClassName("infoImg");
+ imgdivsel[0].style.width = "10%" ; 
+
+		}
+		
+		
 		clearPositioningsObjectsOnScene();
 
 if(Who != pickResult.pickedMesh.TeamId && isTurnBased ){return; }
@@ -2498,7 +2530,7 @@ span.onclick = function() {
 }
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
-  if (event.target === document.getElementById("renderCanvas")) {
+  if (event.target === document.getElementById("renderCanvas") || event.target === document.getElementById("divGoldCount") ||event.target === document.getElementById("guide") || event.target === document.getElementById("info") || event.target === document.getElementById("guide") || event.target === document.getElementById("divSelectedItem")) {
     document.getElementById("modalHelp").style.display = "none";
   }
 }
@@ -2589,6 +2621,8 @@ $("#divPass").hide();
 { $("head").append('<style>abbr[title]:hover::after,abbr[title]:focus::after {  content: attr(title);   position: absolute;  left: 65px;'+
   'bottom: -20px;  width: auto;  white-space: nowrap;    background-color: #1e1e1e;  color: #fff;  border-radius: 3px;'+  
   'box-shadow: 1px 1px 5px 0 rgba(0,0,0,0.4);  z-index:1; font-size: 12px;  padding: 3px 5px;  border:1px  solid white;}        </style>'); 
+  
+ 
 }
  
  if(typeof $("#lblAdminCode").html() != "undefined") // let page load and then.
