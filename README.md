@@ -2,8 +2,12 @@
 Holochess - HoloVice
 
 Babylon js project (3D) with Vice (special sort of dice). 
-There is also a mode, with altered pawns, that resembles Dejarik (Star Wars Universe). To play this mode, you must toggle "space chess".
+
+There is also a mode, with altered pawns, that resembles Dejarik (Star Wars Universe). 
+To play this mode, you must toggle "space chess".
+
 3D-chess (Star Trek inspired) and Omni Tama (Onitama inspired) added.
+
 
 There are three basic options; versus ai, pass&play and bot match. 
 
