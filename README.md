@@ -3,6 +3,8 @@ Holochess - HoloVice
 
 Babylon js project (3D) with Vice (special sort of dice). 
 There is also a mode, with altered pawns, that resembles Dejarik (Star Wars Universe). To play this mode, you must toggle "space chess".
+3D-chess (Star Trek inspired) and Omni Tama (Onitama inspired) added.
+
 There are three basic options; versus ai, pass&play and bot match. 
 
 Both game-modes come with a print & play document (open help after game launch).
@@ -32,6 +34,7 @@ Important: Vice/Vobbels (concept, images) are a registered property of Jonathan 
 For commercial uses contact me (for non-profit causes, please download and have fun). 
 
 Important 2: 
-I have nothing to do with Star Wars (Disney). This is a fan-based mode, without any means to gain profit.
+I have nothing to do with Star Wars (Disney), Star Trek or Onitama. 
+These are fan-based modes, without any means to gain profit (and enough different to be unique).
 
 
