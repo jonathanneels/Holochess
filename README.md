@@ -8,10 +8,8 @@ To play this mode, you must toggle "space chess".
 
 3D-chess (Star Trek inspired) and Omni Tama (Onitama inspired) added.
 
-
 There are three basic options; versus ai, pass&play and bot match. 
-
-Both game-modes come with a print & play document (open help after game launch).
+Most game modes come with a print & play document (open help after game launch).
 
 
 Wat needs to be improved/added;
@@ -38,7 +36,8 @@ Important: Vice/Vobbels (concept, images) are a registered property of Jonathan 
 For commercial uses contact me (for non-profit causes, please download and have fun). 
 
 Important 2: 
-I have nothing to do with Star Wars (Disney), Star Trek or Onitama. 
+I have nothing to do with Star Wars (Disney), Star Trek (ViacomCBS
+) or Onitama (conception). 
 These are fan-based modes, without any means to gain profit (and enough different to be unique).
 
 
