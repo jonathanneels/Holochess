@@ -12,6 +12,7 @@ There are three basic options; versus ai, pass&play and bot match.
 Most game modes come with a print & play document (open help after game launch).
 
 
+
 Wat needs to be improved/added;
 
 -Multiplayer (humans online)
@@ -23,6 +24,7 @@ Wat needs to be improved/added;
 -Last position log (for example in the chatfield).
 
 -lay-out more friendly for all screens (inc. zoom function).
+
 
 
 Feel free to make a fork. Spread the word and share this game! Play versus the ai or on a tablet with other board game enthusiasts.
