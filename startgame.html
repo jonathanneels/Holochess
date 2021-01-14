@@ -595,6 +595,15 @@ if(   m.name.indexOf("SphereBlockObj") >-1 )
 	camera.framingBehavior.elevationReturnWaitTime=2;
 		camera.framingBehavior.elevationReturnTime=100;
             camera.attachControl(canvas, true);
+		//	camera.lowerRadiusLimit = camera.radius-10;camera.upperRadiusLimit = camera.radius;//limit zoom. Ref: https://www.html5gamedevs.com/topic/4421-keep-mouse-wheel-scrolling-html-page-instead-of-zooming-arcrotatecamera/
+		        if (camera.inputs.attached['mousewheel'])
+	{
+	//	 camera.inputs.attached.mousewheel.wheelDeltaPercentage = 0; // default: 0
+		 camera.inputs.attached.mousewheel.wheelPrecision = 100; // default: 3
+		 //note: I've made it a higher number, it went way too fast before. Have yet to find the cause..
+	}
+
+
         ////////////////////////////////// Minimap////////////////////////////////////////////////
    if(isWithMinimap){
      mm = new BABYLON.FreeCamera("minimap", new BABYLON.Vector3(0,10,0), scene);
