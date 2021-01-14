@@ -1322,6 +1322,17 @@ $("#lMoveAndDamgeInfo").html("&#x1F7E5; = move & damage");
 				/////////////////////////////////////////////////////////////
 
 				// other side in center
+				
+				if(g.position.x == 0 && g.position.y >= -0.5 &&  g.position.z >= 2) // object above the abyss top floor.Added as quick fix on 14/01/2021. Concerns (mainly) queens and Bishops
+				{
+				g.dispose(); 
+				}
+				
+				if(g.position.x == 0 && g.position.y <= -2.5 &&  g.position.z <= -2) // object down the abyss bottom floor. Added as quick fix on 14/01/2021. Concerns (mainly) queens and Bishops
+				{
+				g.dispose(); 
+				}
+				
 				if(object.ObjectGameName!=="Knight" &&  object.ObjectGameName!=="Pawn"){
 				
 				  			 	if(  ((object.position.z >= 2 && object.position.z < 4 && Math.ceil(object.position.y)==-groundLevels+3)|| (object.position.z <= -2&& object.position.z > -4&& Math.floor(object.position.y)==-1))){ 
