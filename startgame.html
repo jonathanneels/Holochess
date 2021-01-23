@@ -191,6 +191,7 @@ a:active {
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0); /* mobile webkit */
 }
 
+#lblMouseScrollSpeed{margin-top:7px;position : absolute;}
          </style>
     </head>
 <body id="body" class="noselect">
@@ -261,7 +262,15 @@ a:active {
 <small> *No AI in multiplayer. Playercount must be the total of invited players.</small>
 <hr></span>
 	<u> Singleplayer & pass-and-play </u><br><br>
- <div class="InlineButtons" id="btnLaunchSinglePlayer" onclick="currentPlayerGivesUp=true;" onclick="launchNewGame()"  ><p> LAUNCH</p> </div>
+ <div class="InlineButtons" id="btnLaunchSinglePlayer" onclick="currentPlayerGivesUp=true;" onclick="launchNewGame()"  ><p> LAUNCH</p> 
+
+ </div>
+  	  <label class="container" id="lblMouseScrollSpeed">
+  <input type="checkbox" id="chMouseScrollSpeed"  onclick="  ">
+<abbr title="On some devices the middle mouse button zooms too fast. This is a solution to it."> Low zoom speed? </abbr>
+  <span class="checkmark"></span>
+</label>
+
 	<br><br><hr>
 	<u> Players</u><br>		
 	<input id="radVSAI" type="radio" name="radVersus" onclick="$('#spanAIAdd').show();" checked /><label for="radVSAI" >VS AI</label><br>
@@ -453,7 +462,8 @@ var isColorSwitchSide=false;
         var scene = null;
         var sceneToRender = null;
         var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true }); };
-        
+        var camera;
+		
 		 var confirmMove  ;
 var confirmTaken ;
 
@@ -590,13 +600,13 @@ if(   m.name.indexOf("SphereBlockObj") >-1 )
             scene.clearColor = new BABYLON.Color3(0, 0, .2);//Nice! background color
             // toggleEditor();
         
-            var camera = new BABYLON.ArcRotateCamera("camera1", -Math.PI/2, 1.1, 15, new BABYLON.Vector3(0, 0, 0), scene);
+              camera = new BABYLON.ArcRotateCamera("camera1", -Math.PI/2, 1.1, 15, new BABYLON.Vector3(0, 0, 0), scene);
 			camera.useFramingBehavior = true;
 	camera.framingBehavior.elevationReturnWaitTime=2;
 		camera.framingBehavior.elevationReturnTime=100;
             camera.attachControl(canvas, true);
 		//	camera.lowerRadiusLimit = camera.radius-10;camera.upperRadiusLimit = camera.radius;//limit zoom. Ref: https://www.html5gamedevs.com/topic/4421-keep-mouse-wheel-scrolling-html-page-instead-of-zooming-arcrotatecamera/
-		        if (camera.inputs.attached['mousewheel'])
+		        if (camera.inputs.attached['mousewheel'] && $("#chMouseScrollSpeed").prop("checked"))
 	{
 	//	 camera.inputs.attached.mousewheel.wheelDeltaPercentage = 0; // default: 0
 		 camera.inputs.attached.mousewheel.wheelPrecision = 100; // default: 3
@@ -2531,6 +2541,15 @@ if(currentPlayerGivesUp){$("#info").append( "Player 1 gave up.<br><br>" );}
 		
 		var Reset = function()
 		{
+			        if (camera.inputs.attached['mousewheel'] && $("#chMouseScrollSpeed").prop("checked"))
+	{
+	//	 camera.inputs.attached.mousewheel.wheelDeltaPercentage = 0; // default: 0
+		 camera.inputs.attached.mousewheel.wheelPrecision = 100; // default: 3
+		 //note: I've made it a higher number, it went way too fast before. Have yet to find the cause..
+	}
+	else{
+	 camera.inputs.attached.mousewheel.wheelPrecision = 3;
+	}
 					$("#divSelectedItem").text("");
 groundArray=[];
 					for (var i = 0; i < 10; i++) { //certainly removing all instances.
@@ -2749,7 +2768,7 @@ $("#divPass").hide();
   'bottom: -20px;  width: auto;  white-space: nowrap;    background-color: #1e1e1e;  color: #fff;  border-radius: 3px;'+  
   'box-shadow: 1px 1px 5px 0 rgba(0,0,0,0.4);  z-index:1; font-size: 12px;  padding: 3px 5px;  border:1px  solid white;}        </style>'); 
   
- 
+ $("#lblMouseScrollSpeed").hide();
 }
  
  if(typeof $("#lblAdminCode").html() != "undefined") // let page load and then.
