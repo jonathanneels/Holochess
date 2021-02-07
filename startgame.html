@@ -372,8 +372,8 @@ a:active {
  	 <b>Simple version</b><br><br>
 
 	A game with 'isSpaceChessBoardGameRules' toggled on is a game with one hit, one kill (except mean Savrip). <br>The center - Dejarik - is accessible. Game ends after 50 rounds, the winner is the player with the most pieces. <br>
-	 The starting player is team blue.<br>
-<br> A player action consists out of a movement phase and/or an atack phase (except for Takonada & Monnok).	<br><u>Pieces</u><br>Scouts <i> [Ghhhk & Houjix]</i>  move in an L-movement (horse in chess), 
+	 The starting player is team blue.
+<br> A player action consists out of a movement phase and/or an atack phase (except for Takonada & Monnok).<br> It is allowed to pass only in your second action. <br><br> <u>Pieces</u><br>Scouts <i> [Ghhhk & Houjix]</i>  move in an L-movement (horse in chess), 
 	<br>Brutes <i>[Savrip & Strider]</i> move one step in every direction (1 distance move and 1 distance attack).
 	<br>Moves diagonal like a bishop in chess; <br>Guardians <i>[Molator & Monnok]</i> (2 distance move and 1 distance attack)<br> and Predators <i>[Slug & Takonada]</i>  (2 distance move and 1 distance attack).<br>
 	<small>Note: Predators [Slug & Takonada] can choose to move 1 step up or 1 step down (up is the opponent's direction, down is your location). <br>This shifts the piece to the other tile color.</small>
@@ -1182,6 +1182,9 @@ player.getChildren()[0].material.diffuseColor= new BABYLON.Color3(0.4, 0.0, 0.4)
 					 					 GroundObj(5, 5, 5, "static/images/decor/Dejarik_Chess_Board_Transparent_isSpaceChessBoardGameRules.png",groundLevels); 
 		   groundArray[0].visibility  = 0.5;
   groundArray[0].isPickable=false;
+mm.position.y  =22;
+
+														$( "#divPass" ).hide();
 
 					}
    
@@ -1860,6 +1863,8 @@ bishopMovements(activePlayer);   			if( activePlayer.ObjectGameName=="Slug" || 	
 			var switchUser= function () {
  			
 			
+						 	if(isSpaceChessBoardGameRules){ 	$( "#divPass" ).hide();			}
+
 		if(isTurnBased || !isTurnBased && aICount >=1)
 			{ turnCount+=1;
 			Who+=1;
@@ -1895,7 +1900,8 @@ bishopMovements(activePlayer);   			if( activePlayer.ObjectGameName=="Slug" || 	
 												$("#info").append( f.ObjectGameName +" healed (+2).<br>");
 												}
 if(typeof f.encore !== "undefined")
-												{	delete f['encore'];	}										
+												{	delete f['encore'];	 
+												}										
 				 if(typeof f.poisoned !== "undefined")
 												{
 											 f.Health -=2 
@@ -1975,6 +1981,7 @@ if(typeof activePlayer == "undefined" || isEndgame)
 											{
 											isOkToContinue=false;
 											$("#divSelectedItem").html(f.ObjectGameName +" has another move to make.");
+										  	
 											return false;
 											}
 													});
@@ -2131,7 +2138,8 @@ OmniTamaMovementPatternId =randomInteger(0,3);
 			
 			
 			if( isObjPresent && isStandAndHit && meshTouched.isAllowedToDamage){
-						if(isAttackOrMoveAndAttack && typeof activePlayer.encore !== "undefined"&& (typeof activePlayer.specialId === "undefined" || activePlayer.specialId != 3)){	     delete activePlayer['encore']; }
+						if(isAttackOrMoveAndAttack && typeof activePlayer.encore !== "undefined"&& (typeof activePlayer.specialId === "undefined" || activePlayer.specialId != 3)){	  
+						delete activePlayer['encore']; }
 
 			 			 clearPositioningsObjectsOnScene();
 
@@ -2185,7 +2193,7 @@ if( isSpaceChess){confirmMove.play();}
 												
 			 if(typeof activePlayer["encore"] !== "undefined"&& activePlayer["encore"]>0){
 			 activePlayer["encore"]-=1;
-			 
+			 	if(isSpaceChessBoardGameRules){ 	$( "#divPass" ).show();			}
 
 			 }else{ switchUser();
 
