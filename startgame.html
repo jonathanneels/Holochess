@@ -323,7 +323,7 @@ a:active {
  <br> <br>
 <label class="container"  >
   <input type="checkbox" id="chSwitchSides" >
-<abbr title="Default player 1 plays with the color blue (inc. pieces). Check this on to control the yellow side."> Play as yellow (and its pieces)</abbr>
+<abbr title="Default player 1 plays with the color blue (inc. pieces). Check this on to control the other side."> Play as the other team (and its pieces)</abbr>
   <span class="checkmark"></span>
 </label>
  <br>
@@ -2200,7 +2200,7 @@ if( isSpaceChess){confirmMove.play();}
 												
 			 if(typeof activePlayer["encore"] !== "undefined"&& activePlayer["encore"]>0){
 			 activePlayer["encore"]-=1;
-			 	if(isSpaceChessBoardGameRules){ 	$( "#divPass" ).show();			}
+			 	if(isSpaceChessBoardGameRules && (  aICount ==0 ||(  Who ==0  && (aICount < playerCount  ) )   )){ 	$( "#divPass" ).show();			}
 
 			 }else{ switchUser();
 
