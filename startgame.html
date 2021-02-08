@@ -1137,10 +1137,10 @@ isStandAllowedOnDamageField=false;
 					else 
 					
 					{
-					    	  var	 obj=SquareInteractObj(0.0,.5,-1.0,(gridSizeX/gridSizeZ)-0.22,(gridSizeX/gridSizeZ)-0.05,(gridSizeX/gridSizeZ)-0.22,p2YellowItems,15,1,3,1,1,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Houjix.png","Houjix",-1,"SCOUT | Moves in an L-shape",isColorSwitchSide)  
- 					obj.getChildren()[0].rotation.z  =0.0 
-obj.getChildren()[0].material.diffuseColor= new BABYLON.Color3(0.4, 0.0, 0.4);
-			obj.getChildren()[0].visibility = 0.6;
+					    	  var	 objOtherA=SquareInteractObj(0.0,.5,-1.0,(gridSizeX/gridSizeZ)-0.22,(gridSizeX/gridSizeZ)-0.05,(gridSizeX/gridSizeZ)-0.22,p2YellowItems,15,1,3,1,1,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Houjix.png","Houjix",-1,"SCOUT | Moves in an L-shape",isColorSwitchSide)  
+ 					objOtherA.getChildren()[0].rotation.z  =0.0 
+objOtherA.getChildren()[0].material.diffuseColor= new BABYLON.Color3(0.4, 0.0, 0.4);
+			objOtherA.getChildren()[0].visibility = 0.6;
 
         	  	 obj=SquareInteractObj(0.0,.5,-2.0,(gridSizeX/gridSizeZ)-0.22,(gridSizeX/gridSizeZ)-0.05,(gridSizeX/gridSizeZ)-0.22,p2YellowItems,17,1,2,1,1,isInteractionMeshesUseSprites,"static/images/units/Dejarik_Pieces/Takonada.png","Takonada",3,"PREDATOR | Moves diagonal and 1 up/down | Encore (2 actions in a turn)",isColorSwitchSide)  
 					obj.getChildren()[0].rotation.z  =0.0 
@@ -1183,6 +1183,10 @@ player.getChildren()[0].material.diffuseColor= new BABYLON.Color3(0.4, 0.0, 0.4)
 		   groundArray[0].visibility  = 0.5;
   groundArray[0].isPickable=false;
 mm.position.y  =22;
+
+
+ 			camera.position = new BABYLON.Vector3(camera.position.x-10, camera.position.y+2,  camera.position.z+10)
+        camera.upVector = new BABYLON.Vector3(0, 5, 0);
 
 														$( "#divPass" ).hide();
 
