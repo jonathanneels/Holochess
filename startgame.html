@@ -372,7 +372,7 @@ a:active {
  	 <b>Simple version</b><br><br>
 
 	A game with 'isSpaceChessBoardGameRules' toggled on is a game with one hit, one kill (except mean Savrip). <br>The center - Dejarik - is accessible. Game ends after 50 rounds, the winner is the player with the most pieces. <br>
-	 The starting player is team blue.
+	 The starting player is team red.
 <br> A player action consists out of a movement phase and/or an atack phase (except for Takonada & Monnok).<br> It is allowed to pass only in your second action. <br><br> <u>Pieces</u><br>Scouts <i> [Ghhhk & Houjix]</i>  move in an L-movement (horse in chess), 
 	<br>Brutes <i>[Savrip & Strider]</i> move one step in every direction (1 distance move and 1 distance attack).
 	<br>Moves diagonal like a bishop in chess; <br>Guardians <i>[Molator & Monnok]</i> (2 distance move and 1 distance attack)<br> and Predators <i>[Slug & Takonada]</i>  (2 distance move and 1 distance attack).<br>
@@ -672,7 +672,7 @@ if(   m.name.indexOf("SphereBlockObj") >-1 )
  if(isTurnBased || !isTurnBased && aICount >=1 && isRandomStart){	   
  
    if(isSpaceChessBoardGameRules){
-  if(isColorSwitchSide){Who= 1;}else{ Who= 0;}
+  if(isColorSwitchSide){Who= 0;}else{ Who= 1;}
    }else{
 Who= randomInteger(0,playerCount-1);	 //Random starter	
 }
@@ -1184,8 +1184,11 @@ player.getChildren()[0].material.diffuseColor= new BABYLON.Color3(0.4, 0.0, 0.4)
   groundArray[0].isPickable=false;
 mm.position.y  =22;
 
-
- 			camera.position = new BABYLON.Vector3(camera.position.x-10, camera.position.y+2,  camera.position.z+10)
+ 			
+			camera.alpha=  -Math.PI/2;
+			camera.beta= 1.1;
+			camera.radius= 15;
+			camera.position =	new BABYLON.Vector3( 12, 8, 2);
         camera.upVector = new BABYLON.Vector3(0, 5, 0);
 
 														$( "#divPass" ).hide();
